@@ -1,0 +1,74 @@
+name = Default
+description = Select this profile to create a standard Drupal installation.
+version = VERSION
+core = 7.x
+;CORE
+;-----------------------
+dependencies[] = block
+dependencies[] = dblog
+;dependencies[] = dashboard
+dependencies[] = field_ui
+dependencies[] = file
+dependencies[] = help
+dependencies[] = image
+dependencies[] = list
+dependencies[] = menu
+dependencies[] = number
+dependencies[] = options
+dependencies[] = path
+;dependencies[] = rdf
+dependencies[] = shortcut
+dependencies[] = taxonomy
+
+;dependencies[] = contextual
+;dependencies[] = toolbar
+;dependencies[] = overlay
+
+;CONTRIB
+;-----------------------
+dependencies[] = admin
+dependencies[] = admin_tools
+dependencies[] = admin_theme
+dependencies[] = backup_migrate
+dependencies[] = cck
+dependencies[] = ctools
+dependencies[] = db_maintenance
+dependencies[] = devel
+dependencies[] = dev_banner
+dependencies[] = drupalforfirebug
+dependencies[] = drupalforfirebug_preprocess
+dependencies[] = extlink
+dependencies[] = features
+dependencies[] = googleanalytics
+dependencies[] = imageapi
+dependencies[] = imageapi_gd
+;dependencies[] = jquery_update ** Doesn't work well with admin.module **
+dependencies[] = libraries
+;dependencies[] = login_destination ** Currently has an issue that prevents it from running correctly **
+dependencies[] = menu_admin_per_menu
+dependencies[] = override_node_options
+dependencies[] = permission_select
+dependencies[] = page_title
+dependencies[] = pathauto
+dependencies[] = spamspan
+dependencies[] = token
+dependencies[] = views
+dependencies[] = views_slideshow
+dependencies[] = views_slideshow_cycle
+dependencies[] = views_ui
+dependencies[] = webform
+dependencies[] = wysiwyg
+dependencies[] = xmlsitemap
+dependencies[] = xmlsitemap_custom
+dependencies[] = xmlsitemap_engines
+dependencies[] = xmlsitemap_menu
+dependencies[] = xmlsitemap_node
+;dependencies[] = zenophile
+;dependencies[] = zenophile_sidebars
+
+;CUSTOM
+;-----------------------
+dependencies[] = itspecialists_promo
+;dependencies[] = zenophile_custom
+
+files[] = default.profile
