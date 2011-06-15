@@ -126,45 +126,72 @@ function install_omega_subtheme() {
 //      '#collapsed' => 1,
       '#weight' => 100,
       
-      // Additional CSS
-      'additional_stylesheets' => array(
+      // Additional Stylesheets
+      'stylesheets' => array(
         '#type'        => 'fieldset',
-        '#title'       => st('Additional stylesheets'),
-        '#description' => st('You may create new stylesheets that will be setup with this subtheme.'),
-        '#weight'      => 60,
+        '#title'       => st('Stylesheets'),
+        '#description' => st('You may create new stylesheets that will be included with this theme.'),
+        '#collapsible' => 1,
+        '#weight'      => 10,
         'additional_sheets' => array(
           '#type'        => 'textfield',
           '#title'       => st('Stylesheet name(s)'),
-          '#description' => st('Define new (blank) stylesheets that you would like to include in this theme, separated by a space.'),
+          '#description' => st('Define new (blank) stylesheets that you would like to include with this theme, separated by a space.'),
           '#weight'      => 10,
         ),
         'include_style_css' => array(
           '#type'          => 'checkbox',
-          '#title'         => st('Include style.css file included with Omega subthemes by default'),
-          '#description'   => st('If you are defining new stylesheets above, it is probably best to uncheck this option'),
+          '#title'         => st('Include styles.css file included with Omega subthemes by default'),
           '#weight'        => 20,
           '#default_value' => 1,
         ),
       ),
-    ),
-    'enable_theme' => array(
-      '#type' => 'checkbox',
-      '#title' => st('Enable this theme and set as default'),
-      '#default_value' => 1,
-      '#weight' => 110,
+      
+      'grid' => array(
+        '#type'        => 'fieldset',
+        '#title'       => st('Grid'),
+        '#collapsible' => 1,
+        '#weight'      => 20,
+        
+        'responsive_grid' => array(
+          '#type'  => 'checkbox',
+          '#title' => st('Enable responsive grid layout'),
+        ),
+      ),
+      
+      'miscellaneous' => array(
+        '#type'        => 'fieldset',
+        '#title'       => st('Miscellaneous'),
+        '#collapsible' => 1,
+        '#weight'      => 30,
+        
+        'enable_theme' => array(
+          '#type'          => 'checkbox',
+          '#title'         => st('Enable theme and set as default'),
+          '#description'   => st('If checked, this theme will be enabled and be set as the default theme for this website.'),
+          '#default_value' => 1,
+          '#weight'        => 10,
+        ),
+      ),
     ),
     'submit' => array(
-      '#type' => 'submit',
-      '#value' => st('Save and Continue'),
+      '#type'   => 'submit',
+      '#value'  => st('Save and Continue'),
       '#weight' => 1000,
     )
   );
   
   if (module_exists('less')) {
-    $form['additional_settings']['additional_stylesheets']['less_preprocessing'] = array(
-      '#type' => 'checkbox',
-      '#title' => st('Make all css files in this subtheme LESS CSS compatible'),
-      '#default_value' => 1,
+    $form['additional_settings']['stylesheets']['less'] = array(
+      '#type'   => 'fieldset',
+      '#title'  => st('LESS CSS Preprocessing'),
+      '#weight' => 30,
+      
+      'less_preprocessing' => array(
+        '#type'          => 'checkbox',
+        '#title'         => st('Make all css files in this subtheme LESS CSS compatible'),
+        '#default_value' => 1,
+      ),
     );
   }
   
@@ -260,7 +287,7 @@ function install_omega_subtheme_submit(&$form, &$form_state) {
   }
   // Process the $files array.
   if (process_subtheme($files, $info['t_dir']) !== FALSE) {
-    drupal_set_message(t('A new subtheme was successfully created in %dir. You may now !config_link.', array('%dir' => $info['t_dir'], '!config_link' => l('configure your new theme', 'admin/appearance/settings/'. $form_state['values']['sysname']))));
+    drupal_set_message(t('A new subtheme was successfully created in %dir. You may now !config_link.', array('%dir' => $info['t_dir'], '!config_link' => l('configure your new theme', 'admin/flush-cache/cache', array('query' => array('destination' => 'admin/appearance/settings/'. $form_state['values']['sysname']))))));
   }
 
   // Flush the cached theme data so the new subtheme appears in the parent
@@ -272,7 +299,6 @@ function install_omega_subtheme_submit(&$form, &$form_state) {
     theme_disable(array('bartik'));
     variable_set('theme_default', $form_state['values']['sysname']);
   }
-
 }
 
 
@@ -369,7 +395,7 @@ function process_subtheme($files, $t_dir) {
         else {
           // Open the file, do replacements and save it
           // First, add a replacement to "reset" CVS $ I d $ lines.
-          $opts['repl']['/\$Id.*\$/'] = '$I' . 'd$';
+//          $opts['repl']['/\$Id.*\$/'] = '$I' . 'd$';
           $text = file_get_contents($opts['from']);
           $text = preg_replace(array_keys($opts['repl']), array_values($opts['repl']), $text);
           // Avoid file_put_contents() for PHP 4 l4mz0rz
@@ -407,6 +433,17 @@ function default_subtheme_alter(&$files, $info) {
   $files[$dotinfo]['repl']['/^(version|core|project|datestamp) = ".+$/m'] = '';
 
 
+  // Determine if LESS CSS styling has been selected
+  if ($info['form_values']['less_preprocessing']) {
+    $files['css/styles.css.less'] = $files['css/styles.css'];
+    unset($files['css/styles.css']);
+
+    $files['css/mobile.css.less'] = $files['css/mobile.css'];
+    unset($files['css/mobile.css']);
+    
+    $files[$dotinfo]['repl']["/styles\.css/"] = 'styles.css.less';
+    $files[$dotinfo]['repl']["/mobile\.css/"] = 'mobile.css.less';
+  }
   
   // Additional Stylesheets
   if ($info['form_values']['additional_sheets']) {
@@ -415,7 +452,6 @@ function default_subtheme_alter(&$files, $info) {
     $stylesheet_settings = '';
     $custom_css_weight = 20;
     foreach ($sheets as $sheet) {
-      // Determine if LESS CSS styling has been selected
       $stylesheet = $sheet . '.css' . ($info['form_values']['less_preprocessing'] ? '.less' : '');
       
       $files["css/$stylesheet"] = array(
@@ -429,21 +465,29 @@ function default_subtheme_alter(&$files, $info) {
       $stylesheet_parts = explode('.', $stylesheet);
       $stylesheet_name = ucwords(str_replace(array('-', '_'), ' ', $stylesheet_parts[0]));
       
-      $add_stylesheets .= "css[$stylesheet][name] = $stylesheet_name Styles\ncss[$stylesheet][options][weight] = $custom_css_weight\n\n";
+      $add_stylesheets .= "css[$stylesheet][name] = $stylesheet_name Styles\ncss[$stylesheet][description] = Declared in installation profile.\ncss[$stylesheet][options][weight] = $custom_css_weight\n\n";
       
       $stylesheet_settings .= "\nsettings[alpha_css][$stylesheet] = '$stylesheet'";
       
       $custom_css_weight++;
     }
     
-// NEED TO CHANGE THE styles.css and mobile.css files to be LESS compatible!!!
     
     $files[$dotinfo]['repl']["/; THEME SETTINGS \(DEFAULTS\)\n/"] = $add_stylesheets . "; THEME SETTINGS (DEFAULTS)\n";
-    $files[$dotinfo]['repl']["/settings\[alpha_css\]\[mobile.css\] = 'mobile.css'/"] = "settings[alpha_css][mobile.css] = 'mobile.css'" . $stylesheet_settings;
+    if ($info['form_values']['less_preprocessing']) {
+      $files[$dotinfo]['repl']["/settings\[alpha_css\]\[mobile\.css\.less\] = 'mobile\.css\.less'/"] = "settings[alpha_css][mobile.css.less] = 'mobile.css.less'" . $stylesheet_settings;
+    }
+    else {
+      $files[$dotinfo]['repl']["/settings\[alpha_css\]\[mobile\.css\] = 'mobile\.css'/"] = "settings[alpha_css][mobile.css] = 'mobile.css'" . $stylesheet_settings;
+    }
+  }
+
+  // Responsive grid settings
+  if (!$info['form_values']['responsive_grid']) {
+    $files[$dotinfo]['repl']["/settings\[alpha_responsive\] = '1'/"] = "settings[alpha_responsive] = '0'";
   }
 
   unset($files[$info['parent'] . '.info']);
-
 
   // Copy template.php and theme-settings.php and replace the parent theme's
   // name. Kind of Step 1 plus Step 7 mixed together. The files should already
