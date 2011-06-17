@@ -50,6 +50,9 @@ function default_install_tasks($install_state) {
   return $tasks;
 }
 
+/**
+ * Function for install_omega_subtheme task.
+ */
 function install_omega_subtheme() {
   $omega_loc = drupal_get_path('theme', 'omega');
   $omega_based = array();
@@ -80,7 +83,6 @@ function install_omega_subtheme() {
         '#title'         => st('System name'),
         '#description'   => st('The machine-compatible name of the new theme. This name may only consist of lowercase letters plus the underscore character.'),
         '#type'          => 'textfield',
-//        '#default_value' => $default_sysname,
         '#required'      => TRUE,
         '#weight'        => 10,
       ),
@@ -125,8 +127,6 @@ function install_omega_subtheme() {
       '#collapsible' => 1,
 //      '#collapsed' => 1,
       '#weight' => 100,
-      
-      // Additional Stylesheets
       'stylesheets' => array(
         '#type'        => 'fieldset',
         '#title'       => st('Stylesheets'),
@@ -146,25 +146,21 @@ function install_omega_subtheme() {
           '#default_value' => 1,
         ),
       ),
-      
       'grid' => array(
         '#type'        => 'fieldset',
         '#title'       => st('Grid'),
         '#collapsible' => 1,
         '#weight'      => 20,
-        
         'responsive_grid' => array(
           '#type'  => 'checkbox',
           '#title' => st('Enable responsive grid layout'),
         ),
       ),
-      
       'miscellaneous' => array(
         '#type'        => 'fieldset',
         '#title'       => st('Miscellaneous'),
         '#collapsible' => 1,
         '#weight'      => 30,
-        
         'enable_theme' => array(
           '#type'          => 'checkbox',
           '#title'         => st('Enable theme and set as default'),
@@ -186,7 +182,6 @@ function install_omega_subtheme() {
       '#type'   => 'fieldset',
       '#title'  => st('LESS CSS Preprocessing'),
       '#weight' => 30,
-      
       'less_preprocessing' => array(
         '#type'          => 'checkbox',
         '#title'         => st('Make all css files in this subtheme LESS CSS compatible'),
@@ -198,6 +193,9 @@ function install_omega_subtheme() {
   return $form;
 }
 
+/**
+ * Validation handler for install_omega_subtheme function.
+ */
 function install_omega_subtheme_validate(&$form, &$form_state) {
   // Check that the system name of the theme is valid
   if ($exists = drupal_get_path('theme', $form_state['values']['sysname'])) {
@@ -247,13 +245,16 @@ function install_omega_subtheme_validate(&$form, &$form_state) {
   }
 }
 
+/**
+ * Submission handler for install_omega_subtheme function.
+ */
 function install_omega_subtheme_submit(&$form, &$form_state) {
   $omega_dir = drupal_get_path('theme', 'omega');
   $info = array(
     't_name'      => $form_state['values']['sysname'],
     't_dir'       => "sites/{$form_state['values']['site']}/themes/{$form_state['values']['sysname']}",
     'parent'      => $form_state['values']['parent'],
-    'parent_dir'  => $form_state['values']['parent'] === 'STARTERKIT' ? ($form_state['values']['omega_info']['vers_float'] >= 2 ? $omega_dir . '/STARTERKIT' : $omega_dir . '/../STARTERKIT') : drupal_get_path('theme', $form_state['values']['parent']),
+    'parent_dir'  => drupal_get_path('theme', $form_state['values']['parent']),
     'omega_dir'   => $omega_dir,
     'form_values' => $form_state['values'],
   );
@@ -299,6 +300,18 @@ function install_omega_subtheme_submit(&$form, &$form_state) {
     theme_disable(array('bartik'));
     variable_set('theme_default', $form_state['values']['sysname']);
   }
+  
+  // Set the 'Main Page Content' block to the content region
+  db_update('block')
+    ->fields(array(
+      'status' => 1,
+      'region' => 'content',
+      'weight' => 0,
+    ))
+    ->condition('module', 'system')
+    ->condition('delta', 'main')
+    ->condition('theme', $form_state['values']['sysname'])
+    ->execute();
 }
 
 
@@ -344,9 +357,8 @@ function populate_omega_files($dir, $cur_path) {
   }
   $h = opendir("{$dir}/{$cur_path}");
   while (($file = readdir($h)) !== FALSE) {
-    if ($file !== 'CVS' && $file !== 'images-source' && $file{0} !== '.') {
-      // Don't copy CVS directories, hidden files, or the images-source
-      // directory - perhaps the latter should be a user-controllable option.
+    // Don't copy hidden files
+    if ($file{0} !== '.') {
       if (is_dir("{$dir}/{$cur_path}{$file}")) {
         $files["{$cur_path}{$file}"] = 'dir';
         $files = array_merge($files, populate_omega_files($dir, "{$cur_path}{$file}"));
@@ -394,8 +406,6 @@ function process_subtheme($files, $t_dir) {
         }
         else {
           // Open the file, do replacements and save it
-          // First, add a replacement to "reset" CVS $ I d $ lines.
-//          $opts['repl']['/\$Id.*\$/'] = '$I' . 'd$';
           $text = file_get_contents($opts['from']);
           $text = preg_replace(array_keys($opts['repl']), array_values($opts['repl']), $text);
           // Avoid file_put_contents() for PHP 4 l4mz0rz
@@ -409,17 +419,18 @@ function process_subtheme($files, $t_dir) {
 }
 
 /**
- * Implements hook_omegaphile_alter().
+ * Sets replacement patterns to change the associated theme files.
  *
- * This is our own implementation of hook_omegaphile_alter(). This one should
- * fire first because we're setting the module's weight in the {system} table to
- * -10 in hook_install(). Otherwise, this implementation would probably fire
- * last due to the name of this module, which places it near the end of any
- * alphabetical ordering.
+ * @param $files
+ *   The files to process.
+ *   
+ * @param $info
+ *   The information about the theme to create
+ * 
  */
 function default_subtheme_alter(&$files, $info) {
   $weight = 59990;
-  // Step 2: Rename the .info file, and replace instances of the parent name
+  // Rename the .info file, and replace instances of the parent name with
   // that of the child name. Also, add the name and description.
   $dotinfo = $info['t_name'] . '.info';
   $files[$dotinfo] = $files[$info['parent'] . '.info'];
@@ -431,7 +442,6 @@ function default_subtheme_alter(&$files, $info) {
   // Remove packaging robot stuff
   $files[$dotinfo]['repl']['/^; Information added by drupal\.org packaging script on .+$/m'] = '';
   $files[$dotinfo]['repl']['/^(version|core|project|datestamp) = ".+$/m'] = '';
-
 
   // Determine if LESS CSS styling has been selected
   if ($info['form_values']['less_preprocessing']) {
@@ -490,8 +500,7 @@ function default_subtheme_alter(&$files, $info) {
   unset($files[$info['parent'] . '.info']);
 
   // Copy template.php and theme-settings.php and replace the parent theme's
-  // name. Kind of Step 1 plus Step 7 mixed together. The files should already
-  // be there in $files, so we'll just tweak their repl arrays.
+  // name. The files should already be there in $files, so we'll just tweak their repl arrays.
   $files['template.php']['repl']["/{$info['parent']}/"] = $info['t_name'];
   $files['theme-settings.php']['repl']["/{$info['parent']}/"] = $info['t_name'];
 }

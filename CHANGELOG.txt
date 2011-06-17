@@ -1,4 +1,11 @@
-Versopm 1.1
+Version 1.2
+-----------
+- Added support back in for dev_banner module
+- Improved permissions
+- Added support for Login Destination
+- Code cleanup
+
+Version 1.1
 -----------
 ** COMPLETE REWRITE **
 - Added Omega Subtheme setup task
