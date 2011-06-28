@@ -1,4 +1,4 @@
-name = Default
+name = Bedrock
 description = Select this profile to create a standard Drupal installation.
 version = 7.x-1.2
 core = 7.x
@@ -54,7 +54,7 @@ dependencies[] = page_title
 dependencies[] = pathauto
 dependencies[] = pathologic
 dependencies[] = quickbar
-dependencies[] = redirect ; Former path_redirect in D6
+dependencies[] = redirect
 dependencies[] = spamspan
 dependencies[] = token
 dependencies[] = views
@@ -75,4 +75,4 @@ dependencies[] = itspecialists_promo
 dependencies[] = quickbar_help
 dependencies[] = quickbar_organize
 
-files[] = default.profile
+files[] = bedrock.profile

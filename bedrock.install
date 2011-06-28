@@ -6,7 +6,7 @@
  *
  * Perform actions to set up the site for this profile.
  */
-function default_install() {
+function bedrock_install() {
 /**
  * Content Types
  * *****************************************/

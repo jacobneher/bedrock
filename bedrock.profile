@@ -6,7 +6,7 @@
  *
  * Allows the profile to alter the site configuration form.
  */
-function default_form_install_configure_form_alter(&$form, $form_state) {
+function bedrock_form_install_configure_form_alter(&$form, $form_state) {
   $chunks = explode('.', $_SERVER['SERVER_NAME']);
   if (count($chunks) == 3) {
     $domain = $chunks[0];
@@ -37,7 +37,7 @@ function default_form_install_configure_form_alter(&$form, $form_state) {
 /**
  * Implements hook_install_tasks().
  */
-function default_install_tasks($install_state) {
+function bedrock_install_tasks($install_state) {
   $tasks = array(
     'install_omega_subtheme' => array(
       'display_name' => st('Omega subtheme'),
@@ -68,7 +68,7 @@ function install_omega_subtheme() {
 
   // We need to get all starterkits, but we don't want the base Omega theme (omega.info)
   foreach (list_themes(TRUE) as $theme) {
-    if (isset($theme->base_theme) && ($theme->base_theme === 'omega' || $theme->base_theme === 'alpha') && !strpos($theme->filename, 'omega.info')) {
+    if (isset($theme->base_theme) && ($theme->base_theme === 'omega' || $theme->base_theme === 'alpha') && $theme->filename != 'omega.info') {
       $omega_based[$theme->name] = st('@tname (@tsname)', array('@tname' => $theme->info['name'], '@tsname' => str_replace("/{$theme->name}.info", '', $theme->filename)));
     }
   }
@@ -428,7 +428,7 @@ function process_subtheme($files, $t_dir) {
  *   The information about the theme to create
  * 
  */
-function default_subtheme_alter(&$files, $info) {
+function bedrock_subtheme_alter(&$files, $info) {
   $weight = 59990;
   // Rename the .info file, and replace instances of the parent name with
   // that of the child name. Also, add the name and description.
@@ -445,14 +445,17 @@ function default_subtheme_alter(&$files, $info) {
 
   // Determine if LESS CSS styling has been selected
   if ($info['form_values']['less_preprocessing']) {
-    $files['css/styles.css.less'] = $files['css/styles.css'];
-    unset($files['css/styles.css']);
-
-    $files['css/mobile.css.less'] = $files['css/mobile.css'];
-    unset($files['css/mobile.css']);
+    foreach (array_keys($files) as $file) {
+      if (strpos($file, '.css')) {
+        $files[$file . '.less'] = $files[$file];
+        unset($files[$file]);
+      }
+    }
     
-    $files[$dotinfo]['repl']["/styles\.css/"] = 'styles.css.less';
-    $files[$dotinfo]['repl']["/mobile\.css/"] = 'mobile.css.less';
+    // Putting [ ] around regex pattern so that the pattern doesn't "leak" to other stylesheets
+    // that we don't want to change, e.g. alpha-mobile.css
+    $files[$dotinfo]['repl']["/\[styles\.css/\]"] = '[styles.css.less]';
+    $files[$dotinfo]['repl']["/\[mobile\.css\]/"] = '[mobile.css.less]';
   }
   
   // Additional Stylesheets
@@ -491,7 +494,15 @@ function default_subtheme_alter(&$files, $info) {
       $files[$dotinfo]['repl']["/settings\[alpha_css\]\[mobile\.css\] = 'mobile\.css'/"] = "settings[alpha_css][mobile.css] = 'mobile.css'" . $stylesheet_settings;
     }
   }
-
+  
+  // Renaming the css files
+  foreach (array_keys($files) as $file) {
+    if (strpos($file, '.css') && strpos($file, 'alpha-')) {
+      $files[preg_replace('/(alpha|starterkit-omega)-(xhtml|html5)/', $info['t_name'], $file)] = $files[$file];
+      unset($files[$file]);
+    }
+  }
+  
   // Responsive grid settings
   if (!$info['form_values']['responsive_grid']) {
     $files[$dotinfo]['repl']["/settings\[alpha_responsive\] = '1'/"] = "settings[alpha_responsive] = '0'";
