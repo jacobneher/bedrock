@@ -454,8 +454,8 @@ function bedrock_subtheme_alter(&$files, $info) {
     
     // Putting [ ] around regex pattern so that the pattern doesn't "leak" to other stylesheets
     // that we don't want to change, e.g. alpha-mobile.css
-    $files[$dotinfo]['repl']["/\[styles\.css/\]"] = '[styles.css.less]';
-    $files[$dotinfo]['repl']["/\[mobile\.css\]/"] = '[mobile.css.less]';
+    $files[$dotinfo]['repl']["/(\[|\')styles\.css(\]|\')/"] = '${1}styles.css.less${2}';
+    $files[$dotinfo]['repl']["/(\[|\')mobile\.css(\]|\')/"] = '${1}mobile.css.less${2}';
   }
   
   // Additional Stylesheets
