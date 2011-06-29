@@ -276,21 +276,6 @@ function bedrock_install() {
 
 
 /**
- * Admin Theme (CORE)
- * *****************************************/
-  variable_set('admin_theme', 'seven');
-  variable_set('node_admin_theme', 1);
- 
-
-/**
- * Update Module (CORE)
- * *****************************************/
-  variable_set('update_notification_threshold', 'security');
-  variable_set('update_check_frequency', 1);
-  variable_set('update_check_disabled', 0);
-
-  
-/**
  * XML Sitemap Module
  * *****************************************/
   $xmlsitemap_included = array(
@@ -469,6 +454,21 @@ function bedrock_install() {
 
 
 /**
+ * Admin Theme (CORE)
+ * *****************************************/
+  variable_set('admin_theme', 'doohickey');
+  variable_set('node_admin_theme', 1);
+ 
+
+/**
+ * Update Module (CORE)
+ * *****************************************/
+  variable_set('update_notification_threshold', 'security');
+  variable_set('update_check_frequency', 1);
+  variable_set('update_check_disabled', 0);
+
+
+/**
  * Miscellaneous Settings
  * *****************************************/
   // Set anonymous user to Guest
@@ -477,8 +477,6 @@ function bedrock_install() {
   variable_set('user_register', '0');
   // Set the temporary file path
   variable_set('file_temporary_path', 'sites/default/files/tmp');
-  // Set admin_theme
-//  variable_set('admin_theme', 'seven');
   // Set default country
   variable_set('site_default_country', 'US');
 }
