@@ -8,4 +8,3 @@ FEATURES
 
 MISCELLANEOUS
 =============
-- Move contrib modules into logical sub-folders (some modules probably aren't placed right)
