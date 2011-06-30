@@ -509,12 +509,35 @@ function bedrock_install() {
   user_role_grant_permissions(DRUPAL_ANONYMOUS_RID, array('access content'));
   user_role_grant_permissions(DRUPAL_AUTHENTICATED_RID, array('access content'));
 
+  // Create a content contributor role
+  $content_contributor_role = new stdClass();
+  $content_contributor_role->name = 'Content Contributor';
+  $content_contributor_role->weight = 2;
+  user_role_save($content_contributor_role);
+  $content_contributor_permissions = array(
+    'create article content',
+    'create page content',
+    'delete any article content',
+    'delete any page content',
+    'delete own article content',
+    'delete own page content',
+    'edit any article content',
+    'edit any page content',
+    'edit own article content',
+    'edit own page content',
+    'use text format wysiwyg',
+    'view own unpublished content',
+    'view revisions',
+    'view the administration theme',
+  );
+  user_role_grant_permissions($content_contributor_role->rid, $content_contributor_permissions);
+  
   // Create a user administrator role
-  $content_admin_role = new stdClass();
-  $content_admin_role->name = 'content administrator';
-  $content_admin_role->weight = 2;
-  user_role_save($content_admin_role);
-  $content_admin_permissions = array(
+  $user_admin_role = new stdClass();
+  $user_admin_role->name = 'Administrator';
+  $user_admin_role->weight = 3;
+  user_role_save($user_admin_role);
+  $user_admin_permissions = array(
     'access user profiles',
     'administer main-menu menu items',
     'administer users',
@@ -539,11 +562,12 @@ function bedrock_install() {
     'view revisions',
     'view the administration theme',
   );
-  user_role_grant_permissions($content_admin_role->rid, $content_admin_permissions);
+  user_role_grant_permissions($user_admin_role->rid, $user_admin_permissions);
+
   // Create a default role for site administrators, with all available permissions assigned.
   $site_admin_role = new stdClass();
-  $site_admin_role->name = 'site administrator';
-  $site_admin_role->weight = 3;
+  $site_admin_role->name = 'IT Specialists';
+  $site_admin_role->weight = 4;
   user_role_save($site_admin_role);
   user_role_grant_permissions($site_admin_role->rid, array_keys(module_invoke_all('permission')));
   // Set this as the administrator role.
@@ -563,7 +587,7 @@ function bedrock_install() {
  * *****************************************/
   variable_set('admin_theme', 'doohickey');
   variable_set('node_admin_theme', 1);
- 
+
 
 /**
  * Update Module (CORE)
