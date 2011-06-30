@@ -1,6 +1,4 @@
 <?php
-// $Id: standard.install,v 1.30 2011/01/04 18:24:24 webchick Exp $
-
 /**
  * Implements hook_install().
  *
@@ -42,7 +40,6 @@ function bedrock_install() {
   //Set the content types to not display author information
   variable_set('node_submitted_page', 0);
   variable_set('node_submitted_article', 0);
-  variable_set('node_submitted_webform', 0);
   
   // Default "Page" to not be promoted and have comments disabled.
   variable_set('node_options_page', array('status'));
@@ -57,6 +54,7 @@ function bedrock_install() {
  * Webform Module
  * *****************************************/
   // Default "Webform" to not be promoted and have comments disabled.
+  variable_set('node_submitted_webform', 0);
   variable_set('node_options_webform', array('status'));
   variable_set('comment_webform', COMMENT_NODE_HIDDEN);
   
@@ -65,28 +63,6 @@ function bedrock_install() {
  * Pathauto Module
  * *****************************************/
   variable_set('pathauto_node_pattern', '[node:title]');
-
-
-/**
- * URL Alias Module
- * *****************************************/
-  $query = db_insert('url_alias')->fields(array('source', 'alias'));
-  $values = array(
-    array(
-      'source'   => 'user/login',
-      'alias'    => 'login',
-      'language' => 'und',
-    ),
-    array(
-      'source'   => 'user/logout',
-      'alias'    => 'logout',
-      'language' => 'und',
-    )
-  );
-  foreach ($values as $record) {
-    $query->values($record);
-  }
-  $query->execute();
 
 
 /**
@@ -114,7 +90,7 @@ function bedrock_install() {
     'image_effects', 'image_styles', 'image_styles', 'login_destination', 'login_destination', 'menu_custom',
     'menu_custom', 'menu_links', 'menu_links', 'menu_router', 'menu_router', 'node', 'node', 'node_access',
     'node_access', 'node_revision', 'node_revision', 'node_type', 'node_type', 'page_title', 'page_title',
-    'queue', 'queue', 'rdf_mapping', 'rdf_mapping', 'registry', 'registry', 'registry_file', 'registry_file',
+    'queue', 'queue', 'quickbar_help', 'quickbar_help', 'redirect', 'redirect', 'rdf_mapping', 'rdf_mapping', 'registry', 'registry', 'registry_file', 'registry_file',
     'role', 'role', 'role_permission', 'role_permission', 'semaphore', 'semaphore', 'sequences', 'sequences',
     'sessions', 'sessions', 'shortcut_set', 'shortcut_set', 'shortcut_set_users', 'shortcut_set_users',
     'system', 'system', 'taxonomy_index', 'taxonomy_index', 'taxonomy_term_data', 'taxonomy_term_data',
@@ -139,7 +115,6 @@ function bedrock_install() {
 /**
  * Admin Module
  * *****************************************/  
-
   $admin_toolbar = array(
     'layout'   => 'vertical',
     'position' => 'nw',
@@ -439,16 +414,6 @@ function bedrock_install() {
     'name' => 'WYSIWYG',
     'weight' => 15,
     'filters' => array(
-      // URL filter.
-      'filter_url' => array(
-        'weight' => 0,
-        'status' => 1,
-      ),
-      // Line break filter.
-      'filter_autop' => array(
-        'weight' => 1,
-        'status' => 1,
-      ),
       // HTML corrector filter.
       'filter_htmlcorrector' => array(
         'weight' => 10,

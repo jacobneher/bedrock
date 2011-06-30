@@ -1,6 +1,4 @@
 <?php
-// $Id: standard.profile,v 1.2 2010/07/22 16:16:42 dries Exp $
-
 /**
  * Implements hook_form_FORM_ID_alter().
  *
@@ -122,11 +120,10 @@ function install_omega_subtheme() {
       ),
     ),
     'additional_settings' => array(
-      '#type'  => 'fieldset',
-      '#title' => st('Additional settings'),
+      '#type'        => 'fieldset',
+      '#title'       => st('Additional settings'),
       '#collapsible' => 1,
-//      '#collapsed' => 1,
-      '#weight' => 100,
+      '#weight'      => 100,
       'stylesheets' => array(
         '#type'        => 'fieldset',
         '#title'       => st('Stylesheets'),
@@ -468,9 +465,9 @@ function bedrock_subtheme_alter(&$files, $info) {
       $stylesheet = $sheet . '.css' . ($info['form_values']['less_preprocessing'] ? '.less' : '');
       
       $files["css/$stylesheet"] = array(
-        'from' => '', // Left empty since we are creating the file
-        'type' => 'file',
-        'repl' => '',
+        'from'   => '', // Left empty since we are creating the file
+        'type'   => 'file',
+        'repl'   => '',
         'weight' => 300, // This has to be set higher than the base 'css' folder creation, which is set at 250
       );
       
