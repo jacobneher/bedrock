@@ -450,9 +450,8 @@ function bedrock_subtheme_alter(&$files, $info) {
     }
     
     // Putting [ ] around regex pattern so that the pattern doesn't "leak" to other stylesheets
-    // that we don't want to change, e.g. alpha-mobile.css
-    $files[$dotinfo]['repl']["/(\[|\')styles\.css(\]|\')/"] = '${1}styles.css.less${2}';
-    $files[$dotinfo]['repl']["/(\[|\')mobile\.css(\]|\')/"] = '${1}mobile.css.less${2}';
+    // that we don't want to change
+    $files[$dotinfo]['repl']["/(\[|\')global\.css(\]|\')/"] = '${1}global.css.less${2}';
   }
   
   // Additional Stylesheets
@@ -485,17 +484,17 @@ function bedrock_subtheme_alter(&$files, $info) {
     
     $files[$dotinfo]['repl']["/; THEME SETTINGS \(DEFAULTS\)\n/"] = $add_stylesheets . "; THEME SETTINGS (DEFAULTS)\n";
     if ($info['form_values']['less_preprocessing']) {
-      $files[$dotinfo]['repl']["/settings\[alpha_css\]\[mobile\.css\.less\] = 'mobile\.css\.less'/"] = "settings[alpha_css][mobile.css.less] = 'mobile.css.less'" . $stylesheet_settings;
+      $files[$dotinfo]['repl']["/settings\[alpha_css\]\[global\.css\.less\] = 'global\.css\.less'/"] = "settings[alpha_css][global.css.less] = 'global.css.less'" . $stylesheet_settings;
     }
     else {
-      $files[$dotinfo]['repl']["/settings\[alpha_css\]\[mobile\.css\] = 'mobile\.css'/"] = "settings[alpha_css][mobile.css] = 'mobile.css'" . $stylesheet_settings;
+      $files[$dotinfo]['repl']["/settings\[alpha_css\]\[global\.css\] = 'global\.css'/"] = "settings[alpha_css][global.css] = 'global.css'" . $stylesheet_settings;
     }
   }
   
   // Renaming the css files
   foreach (array_keys($files) as $file) {
-    if (strpos($file, '.css') && strpos($file, 'alpha-')) {
-      $files[preg_replace('/(alpha|starterkit-omega)-(xhtml|html5)/', $info['t_name'], $file)] = $files[$file];
+    if (strpos($file, '.css') && strpos($file, 'YOURTHEME')) {
+      $files[preg_replace('/YOURTHEME/', $info['t_name'], $file)] = $files[$file];
       unset($files[$file]);
     }
   }
