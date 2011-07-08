@@ -394,6 +394,11 @@ function process_subtheme($files, $t_dir) {
       if ($opts['from'] === '') {
         // No 'from' value, so just make a blank file
         touch($dest);
+        
+        // If we want to add contents to a new file...
+        $h = fopen($dest, 'w');
+        fwrite($h, $opts['repl']);
+        fclose($h);
       }
       else {
         // If the file is probably not a text, code or CSS file…
@@ -498,6 +503,35 @@ function bedrock_subtheme_alter(&$files, $info) {
       unset($files[$file]);
     }
   }
+//print '<pre>'; print_r($info); die('</pre>');
+  
+  // Set a copyright notice in the footer
+  $notice = "<?php\n";
+  $notice .= "/**\n";
+  $notice .= " * Implements hook_preprocess_region().\n";
+  $notice .= " */\n";
+  $notice .= 'function ' . $info['t_name'] . '_alpha_preprocess_region(&$vars) {' . "\n";
+  $notice .= "  if (\$vars['region'] == 'footer_second') {\n";
+  $notice .= "    \$vars['content'] .= '<div id=\"copyright-notice\">';\n";
+  $notice .= "    \$start_year = 2011;\n";
+  $notice .= "    \$current_year = date('Y');\n";
+  $notice .= "    if (\$current_year > \$start_year) {\n";
+  $notice .= "      \$printed_year = \$start_year . '-' . \$current_year;\n";
+  $notice .= "    }\n";
+  $notice .= "    else {\n";
+  $notice .= "      \$printed_year = \$start_year;\n";
+  $notice .= "    }\n";
+  $notice .= "    \$vars['content'] .= '&#169; ' . \$printed_year . ' ' . variable_get('site_name', '') . ' - All Rights Reserved.';\n";
+  $notice .= "    \$vars['content'] .= '</div>';\n";
+  $notice .= "  }\n";
+  $notice .= '}';
+
+  $files["preprocess/preprocess-region.inc"] = array(
+    'from'   => '', // Left empty since we are creating the file
+    'type'   => 'file',
+    'repl'   => $notice,
+    'weight' => 500,
+  );
   
   // Responsive grid settings
   if (!$info['form_values']['responsive_grid']) {
