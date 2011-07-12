@@ -78,41 +78,42 @@ function install_omega_subtheme() {
       '#type'   => 'fieldset',
       '#weight' => 10,
       'sysname' => array(
+        '#type'          => 'textfield',
         '#title'         => st('System name'),
         '#description'   => st('The machine-compatible name of the new theme. This name may only consist of lowercase letters plus the underscore character.'),
-        '#type'          => 'textfield',
+        '#default_value' => str_replace(' ', '', strtolower(variable_get('site_name', ''))),
         '#required'      => TRUE,
         '#weight'        => 10,
       ),
       'friendly' => array(
+        '#type'          => 'textfield',
         '#title'         => st('Human name'),
         '#description'   => st('A human-friendly name for the new theme. This name may contain uppercase letters, spaces, punctuation, etc.'),
-        '#type'          => 'textfield',
         '#default_value' => variable_get('site_name', ''),
         '#required'      => TRUE,
         '#weight'        => 20,
       ),
       'description' => array(
+        '#type'          => 'textfield',
         '#title'         => st('Description'),
         '#description'   => st('A short description of this theme.'),
-        '#type'          => 'textfield',
         '#default_value' => st("@sitename's theme", array('@sitename' => variable_get('site_name', ''))),
         '#required'      => TRUE,
         '#weight'        => 30,
       ),
       'site' => array(
+        '#type'          => 'select',
         '#title'         => st('Site directory'),
         '#description'   => st('Which site directory will the new theme to be placed in? If in doubt, select &ldquo;all&rdquo;.'),
-        '#type'          => 'select',
         '#options'       => find_omega_sites(),
         '#default_value' => array('default'),
         '#required'      => TRUE,
         '#weight'        => 40,
       ),
       'parent' => array(
+        '#type'          => 'select',
         '#title'         => st('Starter theme'),
         '#description'   => st('The parent theme for the new theme. If in doubt, select &ldquo;Omega XHTML Starter Kit&rdquo;.'),
-        '#type'          => 'select',
         '#options'       => $omega_based,
         '#default_value' => 'starterkit_omega_html5',
         '#required'      => TRUE,
@@ -136,12 +137,6 @@ function install_omega_subtheme() {
           '#description' => st('Define new (blank) stylesheets that you would like to include with this theme, separated by a space.'),
           '#weight'      => 10,
         ),
-        'include_style_css' => array(
-          '#type'          => 'checkbox',
-          '#title'         => st('Include styles.css file included with Omega subthemes by default'),
-          '#weight'        => 20,
-          '#default_value' => 1,
-        ),
       ),
       'grid' => array(
         '#type'        => 'fieldset',
@@ -153,11 +148,25 @@ function install_omega_subtheme() {
           '#title' => st('Enable responsive grid layout'),
         ),
       ),
+      'debug' => array(
+        '#type'        => 'fieldset',
+        '#title'       => st('Debug options'),
+        '#collapsible' => 1,
+        '#weight'      => 30,
+        'debug_blocks_active' => array(
+          '#type'  => 'checkbox',
+          '#title' => st('Show debug blocks by default'),
+        ),
+        'debug_grid_active' => array(
+          '#type'  => 'checkbox',
+          '#title' => st('Show grid overlay by default'),          
+        ),
+      ),
       'miscellaneous' => array(
         '#type'        => 'fieldset',
         '#title'       => st('Miscellaneous'),
         '#collapsible' => 1,
-        '#weight'      => 30,
+        '#weight'      => 40,
         'enable_theme' => array(
           '#type'          => 'checkbox',
           '#title'         => st('Enable theme and set as default'),
@@ -499,12 +508,11 @@ function bedrock_subtheme_alter(&$files, $info) {
   // Renaming the css files
   foreach (array_keys($files) as $file) {
     if (strpos($file, '.css') && strpos($file, 'YOURTHEME')) {
-      $files[preg_replace('/YOURTHEME/', $info['t_name'], $file)] = $files[$file];
+      $files[preg_replace('/YOURTHEME/', str_replace('_', '-' , $info['t_name']), $file)] = $files[$file];
       unset($files[$file]);
     }
   }
-//print '<pre>'; print_r($info); die('</pre>');
-  
+
   // Set a copyright notice in the footer
   $notice = "<?php\n";
   $notice .= "/**\n";
@@ -536,7 +544,26 @@ function bedrock_subtheme_alter(&$files, $info) {
   // Responsive grid settings
   if (!$info['form_values']['responsive_grid']) {
     $files[$dotinfo]['repl']["/settings\[alpha_responsive\] = '1'/"] = "settings[alpha_responsive] = '0'";
+    $files[$dotinfo]['repl']["/settings\[alpha_libraries\]\[omega_mediaqueries\] = 'omega_mediaqueries'/"] = "settings[alpha_libraries][omega_mediaqueries] = ''";
   }
+  
+  // Debug settings
+  if (!$info['form_values']['debug_blocks_active']) {
+    $files[$dotinfo]['repl']["/settings\[alpha_debug_block_active\] = '1'/"] = "settings[alpha_debug_block_active] = '0'";
+  }
+  if (!$info['form_values']['debug_grid_active']) {
+    $files[$dotinfo]['repl']["/settings\[alpha_debug_grid_active\] = '1'/"] = "settings[alpha_debug_grid_active] = '0'";
+  }
+  
+  // I just don't like the text used for global.css name by default...
+  $files[$dotinfo]['repl']["/Your custom global styles/"] = "Global Styles";
+
+  // The roles set by Omega by default don't work for this install profile...
+  // -- set one of the default roles to the rid that we want to be active
+  $files[$dotinfo]['repl']["/settings\[alpha_debug_grid_roles\]\[1\] = '1'/"] = "settings[alpha_debug_grid_roles][5] = '5'";
+  // -- then just remove the other two (plus the newline after...to help keep the .info file clean)
+  $files[$dotinfo]['repl']["/settings\[alpha_debug_grid_roles\]\[2\] = '2'\n/"] = '';
+  $files[$dotinfo]['repl']["/settings\[alpha_debug_grid_roles\]\[3\] = '3'\n/"] = '';
 
   unset($files[$info['parent'] . '.info']);
 
