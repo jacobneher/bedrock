@@ -600,6 +600,8 @@ function bedrock_install() {
 /**
  * Miscellaneous Settings
  * *****************************************/
+  // Disable Core's poorman's cron functionality
+  variable_set('cron_safe_threshold', '0');
   // Set anonymous user to Guest
   variable_set('anonymous', 'Guest');
   // Only administrators can create accounts
