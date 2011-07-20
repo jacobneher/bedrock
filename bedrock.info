@@ -84,6 +84,7 @@ dependencies[] = spamspan
 
 ;user_interface
 ;--------------
+dependencies[] = module_filter
 dependencies[] = page_title
 dependencies[] = pathauto
 
