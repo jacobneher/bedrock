@@ -583,6 +583,46 @@ function bedrock_install() {
 
 
 /**
+ * Content Type: Extras
+ * *****************************************/
+  $node_options = array(
+    'status' => 'status',
+    'promote' => 0,
+    'sticky' => 0,
+    'revision' => 0,
+  );
+  variable_set('content_type_extras_node_options', serialize($node_options));
+  variable_set('content_type_extras_node_preview', '0');
+  variable_set('content_type_extras_node_save_edit', '0');
+  variable_set('content_type_extras_node_save_new', '0');
+  variable_set('content_type_extras_node_submitted', 0);
+  $create_permissions = array(
+    1 => 0,
+    2 => 0,
+    3 => 0,
+    4 => '4',
+    5 => '5',
+  );
+  variable_set('content_type_extras_user_permissions_create', serialize($create_permissions));
+  $delete_permissions = array(
+    1 => 0,
+    2 => 0,
+    3 => 0,
+    4 => '4',
+    5 => '5',
+  );
+  variable_set('content_type_extras_user_permissions_delete', serialize($delete_permissions));
+  $edit_permissions = array(
+    1 => 0,
+    2 => 0,
+    3 => 0,
+    4 => '4',
+    5 => '5',
+  );
+  variable_set('content_type_extras_user_permissions_create', serialize($edit_permissions));
+
+
+/**
  * Admin Theme (CORE)
  * *****************************************/
   variable_set('admin_theme', 'doohickey');
