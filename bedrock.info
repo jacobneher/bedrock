@@ -6,6 +6,7 @@ core = 7.x
 ;CORE
 ;-----------------------
 dependencies[] = block
+dependencies[] = contextual
 dependencies[] = dblog
 dependencies[] = field_ui
 dependencies[] = file
@@ -22,7 +23,6 @@ dependencies[] = taxonomy
 ;not enabled
 ;--------------
 ;dependencies[] = dashboard
-;dependencies[] = contextual
 ;dependencies[] = toolbar
 ;dependencies[] = overlay
 ;dependencies[] = shortcut
@@ -40,16 +40,17 @@ dependencies[] = imageapi
 dependencies[] = imageapi_gd
 dependencies[] = login_destination
 dependencies[] = menu_admin_per_menu
+dependencies[] = module_filter
 dependencies[] = override_node_options
 dependencies[] = pathologic
 dependencies[] = permission_select
+dependencies[] = quickbar
 dependencies[] = redirect
 dependencies[] = wysiwyg
 
 ;content
 ;--------------
 dependencies[] = cck
-dependencies[] = content_type_overrides
 dependencies[] = imce
 dependencies[] = imce_wysiwyg
 dependencies[] = webform
@@ -80,12 +81,11 @@ dependencies[] = token
 ;optimization
 ;--------------
 dependencies[] = db_maintenance
-;dependencies[] = metatags - IN EARLY DEVELOPMENT - Not available yet
+dependencies[] = metatag
 dependencies[] = spamspan
 
 ;user_interface
 ;--------------
-dependencies[] = module_filter
 dependencies[] = page_title
 dependencies[] = pathauto
 
@@ -97,16 +97,8 @@ dependencies[] = views
 dependencies[] = views_ui
 
 
-;COWORK
-; These modules will probably move to another location in production sites
-;-----------------------
-dependencies[] = quickbar
-
-
 ;CUSTOM
 ;-----------------------
-dependencies[] = itspecialists_promo
-dependencies[] = quickbar_help
-dependencies[] = quickbar_organize
+;dependencies[] = itspecialists_promo
 
 files[] = bedrock.profile

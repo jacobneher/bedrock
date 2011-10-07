@@ -1,10 +1,18 @@
 <?php
+
 /**
  * Implements hook_install().
  *
  * Perform actions to set up the site for this profile.
  */
 function bedrock_install() {
+/**
+ * variable_get('site_name', '') doesn't work here (no variable_get() calls do for some reason)
+ * so we provide the site name here, for any configurations that need it.
+ * Example: $site_name will equal something like 'example.com' (no quotes).
+ */
+  $site_name = str_replace('sites/', '', conf_path());
+
 /**
  * Content Types
  * *****************************************/
@@ -162,11 +170,11 @@ function bedrock_install() {
       'filters'           => array(
         'compression'                => 'gzip',
         'notify_success_enable'      => FALSE,
-        'notify_success_email'       => variable_get('site_mail', 'noreply@example.com'),
+        'notify_success_email'       => '',
         'notify_failure_enable'      => FALSE,
-        'notify_failure_email'       => variable_get('site_mail', 'noreply@example.com'),
+        'notify_failure_email'       => '',
         'utils_site_offline'         => FALSE,
-        'utils_site_offline_message' => variable_get('site_name', 'Site') . ' is currently under maintenance. We should be back shortly. Thank you for your patience.',
+        'utils_site_offline_message' => $site_name . ' is currently under maintenance. We should be back shortly. Thank you for your patience.',
         'exclude_tables'             => array(),
         'nodata_tables'              => array(
           'cache', 'cache', 'cache_block', 'cache_block', 'cache_bootstrap', 'cache_bootstrap', 'cache_field', 'cache_field', 'cache_filter',
@@ -186,11 +194,11 @@ function bedrock_install() {
       'filters'           => array(
         'compression'                => 'gzip',
         'notify_success_enable'      => FALSE,
-        'notify_success_email'       => variable_get('site_mail', 'noreply@example.com'),
+        'notify_success_email'       => '',
         'notify_failure_enable'      => FALSE,
-        'notify_failure_email'       => variable_get('site_mail', 'noreply@example.com'),
+        'notify_failure_email'       => '',
         'utils_site_offline'         => FALSE,
-        'utils_site_offline_message' => variable_get('site_name', 'Site') . ' is currently under maintenance. We should be back shortly. Thank you for your patience.',
+        'utils_site_offline_message' => $site_name . ' is currently under maintenance. We should be back shortly. Thank you for your patience.',
         'exclude_tables'             => array(),
         'nodata_tables'              => array(),
       ),
@@ -207,7 +215,7 @@ function bedrock_install() {
       'destination_id' => 'scheduled',
       'name'           => 'Scheduled Backups Directory',
       'type'           => 'file',
-      'location'       => 'sites/default/files/backup_migrate/scheduled',
+      'location'       => conf_path() . '/files/backup_migrate/scheduled',
       'settings'       => array(
         'chmod' => 0,
         'chgrp' => 0,
@@ -583,46 +591,6 @@ function bedrock_install() {
 
 
 /**
- * Content Type: Extras
- * *****************************************/
-  $node_options = array(
-    'status' => 'status',
-    'promote' => 0,
-    'sticky' => 0,
-    'revision' => 0,
-  );
-  variable_set('content_type_extras_node_options', serialize($node_options));
-  variable_set('content_type_extras_node_preview', '0');
-  variable_set('content_type_extras_node_save_edit', '0');
-  variable_set('content_type_extras_node_save_new', '0');
-  variable_set('content_type_extras_node_submitted', 0);
-  $create_permissions = array(
-    1 => 0,
-    2 => 0,
-    3 => 0,
-    4 => '4',
-    5 => '5',
-  );
-  variable_set('content_type_extras_user_permissions_create', serialize($create_permissions));
-  $delete_permissions = array(
-    1 => 0,
-    2 => 0,
-    3 => 0,
-    4 => '4',
-    5 => '5',
-  );
-  variable_set('content_type_extras_user_permissions_delete', serialize($delete_permissions));
-  $edit_permissions = array(
-    1 => 0,
-    2 => 0,
-    3 => 0,
-    4 => '4',
-    5 => '5',
-  );
-  variable_set('content_type_extras_user_permissions_create', serialize($edit_permissions));
-
-
-/**
  * Admin Theme (CORE)
  * *****************************************/
   variable_set('admin_theme', 'doohickey');
@@ -640,14 +608,83 @@ function bedrock_install() {
 /**
  * Miscellaneous Settings
  * *****************************************/
-  // Disable Core's poorman's cron functionality
-  variable_set('cron_safe_threshold', '0');
   // Set anonymous user to Guest
   variable_set('anonymous', 'Guest');
   // Only administrators can create accounts
   variable_set('user_register', '0');
   // Set the temporary file path
-  variable_set('file_temporary_path', 'sites/default/files/tmp');
+  variable_set('file_temporary_path', conf_path() . '/files/tmp');
+  // Set the private file path
+  variable_set('file_private_path', conf_path() . '/private');
   // Set default country
   variable_set('site_default_country', 'US');
+
+/******************
+ * THIS IS JUST A TEMP SOLUTION UNTIL I CAN FIGURE OUT WHY
+ * hosting_task() is not working in hosting_omega_subtheme.drush.inc file
+ * Information for below script found here: http://drupal.org/node/18429
+ *   NOTE: Could not get the Drupal 7 syntax to work!
+ * The file retrieved here is created in hosting_omega_subtheme module.
+ *****************/
+  $subtheme_file = 'omega_subtheme_' . str_replace('.', '-', $site_name) . '.txt';
+  $subtheme_name = file_get_contents("/var/tmp/$subtheme_file");
+  unlink("/var/tmp/$subtheme_file"); // Delete the file to keep the directory clean
+  
+  $dir = '/var/aegir/platforms/drupal7/sites/' . $site_name . '/themes';
+  if (bedrock_copyr('/var/aegir/platforms/drupal7/sites/all/themes/.YOUR-SUBTHEME', $dir . '/' . $subtheme_name)) {
+    $subtheme_dir = $dir . '/' . $subtheme_name;
+    rename($subtheme_dir . '/YOURTHEME.info', $subtheme_dir . '/'. $subtheme_name . '.info');
+    rename($subtheme_dir . '/css/YOURTHEME-alpha-default.css.less', $subtheme_dir . '/css/' . $subtheme_name . '-alpha-default.css.less');
+    rename($subtheme_dir . '/css/YOURTHEME-alpha-default-narrow.css.less', $subtheme_dir . '/css/' . $subtheme_name . '-alpha-default-narrow.css.less');
+    rename($subtheme_dir . '/css/YOURTHEME-alpha-default-normal.css.less', $subtheme_dir . '/css/' . $subtheme_name . '-alpha-default-normal.css.less');
+    rename($subtheme_dir . '/css/YOURTHEME-alpha-default-wide.css.less', $subtheme_dir. '/css/' . $subtheme_name . '-alpha-default-wide.css.less');
+  }
+/*******************/
+}
+
+
+
+
+/**
+ * Copy a file, or recursively copy a folder and its contents
+ *
+ * @author      Aidan Lister <aidan@php.net>
+ * @version     1.0.1
+ * @link        http://aidanlister.com/2004/04/recursively-copying-directories-in-php/
+ * @param       string   $source    Source path
+ * @param       string   $dest      Destination path
+ * @return      bool     Returns TRUE on success, FALSE on failure
+ */
+function bedrock_copyr($source, $dest) {
+  // Check for symlinks
+  if (is_link($source)) {
+    return symlink(readlink($source), $dest);
+  }
+
+  // Simple copy for a file
+  if (is_file($source)) {
+    chgrp($dest, 'aegir');
+    return copy($source, $dest);
+  }
+
+  // Make destination directory
+  if (!is_dir($dest)) {
+    mkdir($dest);
+  }
+
+  // Loop through the folder
+  $dir = dir($source);
+  while (false !== $entry = $dir->read()) {
+    // Skip pointers
+    if ($entry == '.' || $entry == '..') {
+        continue;
+    }
+
+    // Deep copy directories
+    bedrock_copyr("$source/$entry", "$dest/$entry");
+  }
+
+  // Clean up
+  $dir->close();
+  return true;
 }
