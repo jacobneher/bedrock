@@ -627,17 +627,19 @@ function bedrock_install() {
  * The file retrieved here is created in hosting_omega_subtheme module.
  *****************/
   $subtheme_file = 'omega_subtheme_' . str_replace('.', '-', $site_name) . '.txt';
-  $subtheme_name = file_get_contents("/var/tmp/$subtheme_file");
-  unlink("/var/tmp/$subtheme_file"); // Delete the file to keep the directory clean
-  
-  $dir = '/var/aegir/platforms/drupal7/sites/' . $site_name . '/themes';
-  if (bedrock_copyr('/var/aegir/platforms/drupal7/sites/all/themes/.YOUR-SUBTHEME', $dir . '/' . $subtheme_name)) {
-    $subtheme_dir = $dir . '/' . $subtheme_name;
-    rename($subtheme_dir . '/YOURTHEME.info', $subtheme_dir . '/'. $subtheme_name . '.info');
-    rename($subtheme_dir . '/css/YOURTHEME-alpha-default.css.less', $subtheme_dir . '/css/' . $subtheme_name . '-alpha-default.css.less');
-    rename($subtheme_dir . '/css/YOURTHEME-alpha-default-narrow.css.less', $subtheme_dir . '/css/' . $subtheme_name . '-alpha-default-narrow.css.less');
-    rename($subtheme_dir . '/css/YOURTHEME-alpha-default-normal.css.less', $subtheme_dir . '/css/' . $subtheme_name . '-alpha-default-normal.css.less');
-    rename($subtheme_dir . '/css/YOURTHEME-alpha-default-wide.css.less', $subtheme_dir. '/css/' . $subtheme_name . '-alpha-default-wide.css.less');
+  if (file_exists("/var/tmp/$subtheme_file")) {
+    $subtheme_name = file_get_contents("/var/tmp/$subtheme_file");
+    unlink("/var/tmp/$subtheme_file"); // Delete the file to keep the directory clean
+    
+    $dir = '/var/aegir/platforms/drupal7/sites/' . $site_name . '/themes';
+    if (bedrock_copyr('/var/aegir/platforms/drupal7/sites/all/themes/.YOUR-SUBTHEME', $dir . '/' . $subtheme_name)) {
+      $subtheme_dir = $dir . '/' . $subtheme_name;
+      rename($subtheme_dir . '/YOURTHEME.info', $subtheme_dir . '/'. $subtheme_name . '.info');
+      rename($subtheme_dir . '/css/YOURTHEME-alpha-default.css.less', $subtheme_dir . '/css/' . $subtheme_name . '-alpha-default.css.less');
+      rename($subtheme_dir . '/css/YOURTHEME-alpha-default-narrow.css.less', $subtheme_dir . '/css/' . $subtheme_name . '-alpha-default-narrow.css.less');
+      rename($subtheme_dir . '/css/YOURTHEME-alpha-default-normal.css.less', $subtheme_dir . '/css/' . $subtheme_name . '-alpha-default-normal.css.less');
+      rename($subtheme_dir . '/css/YOURTHEME-alpha-default-wide.css.less', $subtheme_dir. '/css/' . $subtheme_name . '-alpha-default-wide.css.less');
+    }
   }
 /*******************/
 }

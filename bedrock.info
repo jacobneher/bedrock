@@ -50,7 +50,6 @@ dependencies[] = wysiwyg
 
 ;content
 ;--------------
-dependencies[] = cck
 dependencies[] = imce
 dependencies[] = imce_wysiwyg
 dependencies[] = webform
