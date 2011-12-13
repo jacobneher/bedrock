@@ -48,7 +48,6 @@ dependencies[] = wysiwyg
 
 ;content
 ;--------------
-dependencies[] = cck
 dependencies[] = content_type_overrides
 dependencies[] = imce
 dependencies[] = imce_wysiwyg
