@@ -272,6 +272,13 @@ function bedrock_install() {
 
   
 /**
+ * Copyright Block Module
+ * *****************************************/
+  variable_set('copyright_block_inceptionyear', date('Y'));
+  variable_set('copyright_block_template', '[year] [holder]');
+
+
+/**
  * Login Destination Module
  * *****************************************/
   db_insert('login_destination')
@@ -603,6 +610,14 @@ function bedrock_install() {
   variable_set('update_notification_threshold', 'security');
   variable_set('update_check_frequency', 1);
   variable_set('update_check_disabled', 0);
+
+
+/**
+ * Promote Module (CUSTOM)
+ * *****************************************/
+  variable_set('promote_link', 'http://itcoloradosprings.com');
+  variable_set('promote_link_text', 'IT Specialists, Inc.');
+  variable_set('promote_text', 'Developed by !link');
 
 
 /**
