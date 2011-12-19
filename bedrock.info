@@ -99,7 +99,7 @@ dependencies[] = redirect
 ;seo
 ;--------------
 dependencies[] = globalredirect
-dependencies[] = google_analytics
+dependencies[] = googleanalytics
 dependencies[] = metatag
 dependencies[] = page_title
 dependencies[] = xmlsitemap
