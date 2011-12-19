@@ -138,7 +138,8 @@ dependencies[] = views_ui
 
 ;CUSTOM
 ;-----------------------
-dependencies[] = admin_tools ;This is a custom fork of the contrib admin_tools module.
+;This is a custom fork of the contrib admin_tools module.
+dependencies[] = admin_tools
 dependencies[] = promote
 
 files[] = bedrock.profile
