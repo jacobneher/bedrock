@@ -656,7 +656,7 @@ function bedrock_install() {
   // Set the temporary file path
   variable_set('file_temporary_path', conf_path() . '/files/tmp');
   // Set the private file path
-  variable_set('file_private_path', conf_path() . '/private');
+  variable_set('file_private_path', conf_path() . '/files/private');
   // Set default country
   variable_set('site_default_country', 'US');
 
