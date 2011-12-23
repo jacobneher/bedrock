@@ -265,7 +265,6 @@ function bedrock_install() {
     'status' => '1',
     'priority' => '0.5',
   );
-  
   variable_set('xmlsitemap_settings_node_page', $xmlsitemap_included);
   variable_set('xmlsitemap_settings_node_article', $xmlsitemap_included);
   variable_set('xmlsitemap_settings_node_webform', $xmlsitemap_included);
@@ -423,9 +422,6 @@ function bedrock_install() {
   $full_html_breaking_format = (object) $full_html_breaking_format;
   filter_format_save($full_html_breaking_format);
 
-/*
- --- Disabling WYSIWYG functionality since I think I will be removing it completely at some point
- --- WYSIWYG module is available, but not installed by default
   // Add Filter Format - Setup WYSIWYG filter format
   $wysiwyg_format = array(
     'format' => 'wysiwyg',
@@ -446,15 +442,11 @@ function bedrock_install() {
   );
   $wysiwyg_format = (object) $wysiwyg_format;
   filter_format_save($wysiwyg_format);
-*/
+
 
 /**
  * WYSIWYG Module
  * *****************************************/
-  // Setup WYSIWYG editor for Filtered HTML input format
-/*
- --- See notes above about WYSIWYG module...
- 
   $wysiwyg = array(
     'format'   => 'filtered_html',
     'editor'   => 'ckeditor',
@@ -521,7 +513,7 @@ function bedrock_install() {
   db_update('wysiwyg')
     ->fields(array('settings' => serialize($wysiwyg_settings)))
     ->execute();
-*/
+
 
 /**
  * Users, Roles, and Permissions
@@ -573,10 +565,6 @@ function bedrock_install() {
     'edit any page content',
     'edit own article content',
     'edit own page content',
-    'override article promote to front page option',
-    'override article published option',
-    'override page promote to front page option',
-    'override page published option',
     'revert revisions',
     'use text format wysiwyg',
     'view own unpublished content',
@@ -619,6 +607,17 @@ function bedrock_install() {
 
 
 /**
+ * Date & Time/Regional Settings
+ * *****************************************/
+  // Date & Time
+  variable_set('date_format_long', 'l, F j, Y - g:ia');
+  variable_set('date_format_medium', 'F j, Y - g:ia');
+  variable_set('date_format_short', 'M j Y - g:ia');
+  // Regional
+  variable_set('date_first_day', 0);
+
+
+/**
  * Promote Module (CUSTOM)
  * *****************************************/
   variable_set('promote_link', 'http://itcoloradosprings.com');
@@ -639,6 +638,9 @@ function bedrock_install() {
   variable_set('file_private_path', conf_path() . '/private');
   // Set default country
   variable_set('site_default_country', 'US');
+
+
+
 
 /******************
  * THIS IS JUST A TEMP SOLUTION UNTIL I CAN FIGURE OUT WHY
@@ -664,9 +666,6 @@ function bedrock_install() {
   }
 /*******************/
 }
-
-
-
 
 /**
  * Copy a file, or recursively copy a folder and its contents

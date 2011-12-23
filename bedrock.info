@@ -115,6 +115,7 @@ dependencies[] = module_filter
 ;user_interface
 ;--------------
 dependencies[] = quickbar
+dependencies[] = wysiwyg
 
 ;users
 ;--------------
