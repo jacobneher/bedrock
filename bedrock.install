@@ -647,16 +647,33 @@ function bedrock_install() {
 
 
 /**
+ * System File Paths
+ * *****************************************/
+  // Public file path
+  variable_set('file_public_path' , conf_path() . '/files');
+  
+  // Temporary file path
+  variable_set('file_temporary_path', conf_path() . '/files/tmp');
+  
+  // Private file path
+  $private_path = conf_path() . '/private';
+  // Emulate what happens when setting up the private file path manually...
+  $form_element = array(
+    '#value' => $private_path,
+    '#name'  => 'file_private_path',
+  );
+  system_check_directory($form_element);
+  // Set the private file path
+  variable_set('file_private_path', $private_path);
+
+
+/**
  * Miscellaneous Settings
  * *****************************************/
   // Set anonymous user to Guest
   variable_set('anonymous', 'Guest');
   // Only administrators can create accounts
   variable_set('user_register', '0');
-  // Set the temporary file path
-  variable_set('file_temporary_path', conf_path() . '/files/tmp');
-  // Set the private file path
-  variable_set('file_private_path', conf_path() . '/files/private');
   // Set default country
   variable_set('site_default_country', 'US');
 
@@ -686,6 +703,12 @@ function bedrock_install() {
     }
   }
 /*******************/
+  theme_enable(array($subtheme_name));
+  variable_set('theme_default', $subtheme_name);
+  // We don't need Bartik, therefore we disable it
+  theme_disable(array('bartik'));
+  // See notes in system.admin.inc (around line 353 for why this line is added)
+  menu_rebuild();
 }
 
 /**
