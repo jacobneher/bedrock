@@ -445,6 +445,27 @@ function bedrock_install() {
 
 
 /**
+ * Path Alias
+ * *****************************************/
+  // Login link
+  db_insert('url_alias')
+    ->fields(array(
+      'source'   => 'user/login',
+      'alias'    => 'login',
+      'language' => 'und',
+    ))
+    ->execute();
+  // Logout link
+  db_insert('url_alias')
+    ->fields(array(
+      'source'   => 'user/logout',
+      'alias'    => 'logout',
+      'language' => 'und',
+    ))
+    ->execute();
+
+
+/**
  * WYSIWYG Module
  * *****************************************/
   $wysiwyg = array(
