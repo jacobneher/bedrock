@@ -537,6 +537,66 @@ function bedrock_install() {
 
 
 /**
+ * Content Type: Extras Module
+ * *****************************************/
+  $content_type_extras_default_settings = array(
+    'title_label'                              => 'Title',
+    'content_type_extras_remove_body'          => 0,
+    'node_preview'                             => 0,
+    'content_type_extras_preview_button'       => 'Preview',
+    'content_type_extras_save_and_new'         => 0,
+    'content_type_extras_save_and_new_button'  => 'Save and New',
+    'content_type_extras_save_and_edit'        => 0,
+    'content_type_extras_save_and_edit_button' => 'Save and Edit',
+    'content_type_extras_cancel'               => 0,
+    'node_options'                             => array(
+      'status'     => 'status',
+        'promote'  => 0,
+        'sticky'   => 0,
+        'revision' => 0,
+      ),
+    'node_submitted'   => 0,
+    'user_permissions' => array(
+      'create_roles' => array(
+        '5' => 5,
+        '1' => 0,
+        '2' => 0,
+        '3' => 0,
+        '4' => 0,
+      ),
+      'edit_roles' => array(
+        '5' => 5,
+        '1' => 0,
+        '2' => 0,
+        '3' => 0,
+        '4' => 0,
+      ),
+      'delete_roles' => array(
+        '5' => 5,
+        '1' => 0,
+        '2' => 0,
+        '3' => 0,
+        '4' => 0,
+      ),
+    ),
+    'content_type_extras_descriptions_required'   => 0,
+    'content_type_extras_user_permissions_select' => 'cte',
+    'content_type_extras_title_hide'              => 0,
+    'content_type_extras_title_hide_css'          => 0,
+    'content_type_extras_title_hide_front'        => 1,
+    'content_type_extras_top_buttons'             => array(
+      'manage_fields' => 0,
+      'node_edit'     => 0,
+    ),
+    'xmlsitemap_settings' => array(
+      'status'   => '1',
+      'priority' => '0.5',
+    ),
+  );
+  variable_set('content_type_extras_default_settings', $content_type_extras_default_settings);
+
+
+/**
  * Users, Roles, and Permissions
  * *****************************************/
   // Enable default permissions for system roles.
