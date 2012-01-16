@@ -756,10 +756,10 @@ function bedrock_install() {
     if (bedrock_copyr('/var/aegir/platforms/drupal7/sites/all/themes/.YOUR-SUBTHEME', $dir . '/' . $subtheme_name)) {
       $subtheme_dir = $dir . '/' . $subtheme_name;
       rename($subtheme_dir . '/YOURTHEME.info', $subtheme_dir . '/'. $subtheme_name . '.info');
-      rename($subtheme_dir . '/css/YOURTHEME-alpha-default.css.less', $subtheme_dir . '/css/' . $subtheme_name . '-alpha-default.css.less');
-      rename($subtheme_dir . '/css/YOURTHEME-alpha-default-narrow.css.less', $subtheme_dir . '/css/' . $subtheme_name . '-alpha-default-narrow.css.less');
-      rename($subtheme_dir . '/css/YOURTHEME-alpha-default-normal.css.less', $subtheme_dir . '/css/' . $subtheme_name . '-alpha-default-normal.css.less');
-      rename($subtheme_dir . '/css/YOURTHEME-alpha-default-wide.css.less', $subtheme_dir. '/css/' . $subtheme_name . '-alpha-default-wide.css.less');
+      rename($subtheme_dir . '/css/YOURTHEME-alpha-default.css.scss', $subtheme_dir . '/css/' . $subtheme_name . '-alpha-default.css.scss');
+      rename($subtheme_dir . '/css/YOURTHEME-alpha-default-narrow.css.scss', $subtheme_dir . '/css/' . $subtheme_name . '-alpha-default-narrow.css.scss');
+      rename($subtheme_dir . '/css/YOURTHEME-alpha-default-normal.css.scss', $subtheme_dir . '/css/' . $subtheme_name . '-alpha-default-normal.css.scss');
+      rename($subtheme_dir . '/css/YOURTHEME-alpha-default-wide.css.scss', $subtheme_dir. '/css/' . $subtheme_name . '-alpha-default-wide.css.scss');
     }
   }
 /*******************/
