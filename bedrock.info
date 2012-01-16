@@ -61,7 +61,7 @@ dependencies[] = devel
 ;dependencies[] = drupalforfirebug
 ;dependencies[] = drupalforfirebug_preprocess
 dependencies[] = features
-dependencies[] = less
+dependencies[] = sassy
 
 ;fields
 ;--------------
