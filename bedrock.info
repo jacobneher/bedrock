@@ -61,6 +61,8 @@ dependencies[] = devel
 ;dependencies[] = drupalforfirebug
 ;dependencies[] = drupalforfirebug_preprocess
 dependencies[] = features
+; prepro is required by sassy
+dependencies[] = prepro
 dependencies[] = sassy
 
 ;fields
