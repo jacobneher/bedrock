@@ -597,6 +597,32 @@ function bedrock_install() {
 
 
 /**
+ * Prepro module (for Sassy module)
+ * *****************************************/
+  $prepro = array(
+    'additional' => array(
+      'sassy'   => array(
+        'debug' => '1',
+        'style' => 'nested',
+      ),
+    ),
+    'filetypes' => array(
+      'sass' => array(
+        'preprocessor'   => 'sassy',
+        'cache'          => 'onload',
+        'cache_location' => 'public://prepro/',
+      ),
+      'scss' => array(
+        'preprocessor'   => 'sassy',
+        'cache'          => 'onload',
+        'cache_location' => 'public://prepro/',
+      ),
+    ),
+  );
+  variable_set('prepro', $prepro);
+
+
+/**
  * Users, Roles, and Permissions
  * *****************************************/
   // Enable default permissions for system roles.
