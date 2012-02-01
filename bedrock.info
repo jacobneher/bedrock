@@ -1,6 +1,6 @@
 name = Bedrock
 description = Select this profile to create a standard Drupal installation.
-version = 7.x-1.4
+version = 7.x-1.5
 core = 7.x
 
 ;CORE
