@@ -1,11 +1,12 @@
 name = Bedrock
 description = Select this profile to create a standard Drupal installation.
-version = 7.x-1.2
+version = 7.x-1.5
 core = 7.x
 
 ;CORE
 ;-----------------------
 dependencies[] = block
+dependencies[] = contextual
 dependencies[] = dblog
 dependencies[] = field_ui
 dependencies[] = file
@@ -19,14 +20,6 @@ dependencies[] = path
 dependencies[] = rdf
 dependencies[] = taxonomy
 
-;not enabled
-;--------------
-;dependencies[] = dashboard
-;dependencies[] = contextual
-;dependencies[] = toolbar
-;dependencies[] = overlay
-;dependencies[] = shortcut
-
 
 ;CONTRIB
 ;-----------------------
@@ -35,77 +28,109 @@ dependencies[] = taxonomy
 dependencies[] = admin
 dependencies[] = admin_tools
 dependencies[] = backup_migrate
-dependencies[] = globalredirect
-dependencies[] = imageapi
-dependencies[] = imageapi_gd
-dependencies[] = login_destination
+dependencies[] = content_type_extras
 dependencies[] = menu_admin_per_menu
-dependencies[] = override_node_options
-dependencies[] = pathologic
 dependencies[] = permission_select
-dependencies[] = redirect
-dependencies[] = wysiwyg
+
+;apis
+;--------------
+dependencies[] = entity
+dependencies[] = libraries
 
 ;content
 ;--------------
-dependencies[] = content_type_overrides
-dependencies[] = imce
-dependencies[] = imce_wysiwyg
+dependencies[] = auto_nodetitle
+dependencies[] = ds
 dependencies[] = webform
-dependencies[] = xmlsitemap
-dependencies[] = xmlsitemap_custom
-dependencies[] = xmlsitemap_engines
-dependencies[] = xmlsitemap_menu
-dependencies[] = xmlsitemap_node
 
 ;development
 ;--------------
 dependencies[] = ctools
 dependencies[] = dev_banner
 dependencies[] = devel
-dependencies[] = drupalforfirebug
-dependencies[] = drupalforfirebug_preprocess
-dependencies[] = features
-dependencies[] = less
+; There is a bug with drupalforfirebug and ctools
+;dependencies[] = drupalforfirebug
+;dependencies[] = drupalforfirebug_preprocess
+; prepro is required by sassy
+dependencies[] = prepro
+dependencies[] = sassy
 
-;miscellaneous
+;fields
+;--------------
+dependencies[] = conditional_fields
+dependencies[] = date
+dependencies[] = email
+dependencies[] = field_collection
+dependencies[] = field_group
+
+;filters
+;--------------
+dependencies[] = pathologic
+dependencies[] = spamspan
+
+;javascript_utilities
+;--------------
+dependencies[] = jquery_update
+
+;media
+;--------------
+;<none>
+
+;path_management
 ;--------------
 dependencies[] = extlink
-dependencies[] = googleanalytics
-;dependencies[] = jquery_update ** Doesn't work well with admin.module **
-dependencies[] = libraries
-dependencies[] = token
+dependencies[] = pathauto
+dependencies[] = redirect
 
-;optimization
+;permissions
 ;--------------
-dependencies[] = db_maintenance
-;dependencies[] = metatags - IN EARLY DEVELOPMENT - Not available yet
-dependencies[] = spamspan
+;<none>
+
+;rules
+;--------------
+;<none>
+
+;seo
+;--------------
+dependencies[] = globalredirect
+dependencies[] = googleanalytics
+dependencies[] = metatag
+dependencies[] = page_title
+dependencies[] = xmlsitemap
+dependencies[] = xmlsitemap_custom
+dependencies[] = xmlsitemap_engines
+dependencies[] = xmlsitemap_menu
+dependencies[] = xmlsitemap_node
+
+;ui_tweaks
+;--------------
+dependencies[] = module_filter
 
 ;user_interface
 ;--------------
-dependencies[] = module_filter
-dependencies[] = page_title
-dependencies[] = pathauto
+dependencies[] = quickbar
+dependencies[] = wysiwyg
+
+;users
+;--------------
+dependencies[] = login_destination
+dependencies[] = logintoboggan
+
+;utilities
+;--------------
+dependencies[] = copyright_block
+dependencies[] = db_maintenance
+dependencies[] = fpa
+dependencies[] = token
 
 ;views
 ;--------------
 dependencies[] = views
-;dependencies[] = views_slideshow
-;dependencies[] = views_slideshow_cycle
 dependencies[] = views_ui
-
-
-;COWORK
-; These modules will probably move to another location in production sites
-;-----------------------
-dependencies[] = quickbar
 
 
 ;CUSTOM
 ;-----------------------
-dependencies[] = itspecialists_promo
-dependencies[] = quickbar_help
-dependencies[] = quickbar_organize
+dependencies[] = promote
 
 files[] = bedrock.profile
