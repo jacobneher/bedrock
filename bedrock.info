@@ -20,23 +20,15 @@ dependencies[] = path
 dependencies[] = rdf
 dependencies[] = taxonomy
 
-;not enabled
-;--------------
-;dependencies[] = dashboard
-;dependencies[] = toolbar
-;dependencies[] = overlay
-;dependencies[] = shortcut
-
 
 ;CONTRIB
 ;-----------------------
 ;administration
 ;--------------
 dependencies[] = admin
+dependencies[] = admin_tools
 dependencies[] = backup_migrate
 dependencies[] = content_type_extras
-dependencies[] = imageapi
-dependencies[] = imageapi_gd
 dependencies[] = menu_admin_per_menu
 dependencies[] = permission_select
 
@@ -49,7 +41,6 @@ dependencies[] = libraries
 ;--------------
 dependencies[] = auto_nodetitle
 dependencies[] = ds
-dependencies[] = panels
 dependencies[] = webform
 
 ;development
@@ -60,7 +51,6 @@ dependencies[] = devel
 ; There is a bug with drupalforfirebug and ctools
 ;dependencies[] = drupalforfirebug
 ;dependencies[] = drupalforfirebug_preprocess
-dependencies[] = features
 ; prepro is required by sassy
 dependencies[] = prepro
 dependencies[] = sassy
@@ -136,15 +126,11 @@ dependencies[] = token
 ;views
 ;--------------
 dependencies[] = views
-;dependencies[] = views_slideshow
-;dependencies[] = views_slideshow_cycle
 dependencies[] = views_ui
 
 
 ;CUSTOM
 ;-----------------------
-;This is a custom fork of the contrib admin_tools module.
-dependencies[] = admin_tools
 dependencies[] = promote
 
 files[] = bedrock.profile
