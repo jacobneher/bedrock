@@ -1,10 +1,18 @@
 <?php
+
 /**
  * Implements hook_install().
  *
  * Perform actions to set up the site for this profile.
  */
 function bedrock_install() {
+/**
+ * variable_get('site_name', '') doesn't work here (no variable_get() calls do for some reason)
+ * so we provide the site name here, for any configurations that need it.
+ * Example: $site_name will equal something like 'example.com' (no quotes).
+ */
+  $site_name = str_replace('sites/', '', conf_path());
+
 /**
  * Content Types
  * *****************************************/
@@ -162,16 +170,16 @@ function bedrock_install() {
       'filters'           => array(
         'compression'                => 'gzip',
         'notify_success_enable'      => FALSE,
-        'notify_success_email'       => variable_get('site_mail', 'noreply@example.com'),
+        'notify_success_email'       => '',
         'notify_failure_enable'      => FALSE,
-        'notify_failure_email'       => variable_get('site_mail', 'noreply@example.com'),
+        'notify_failure_email'       => '',
         'utils_site_offline'         => FALSE,
-        'utils_site_offline_message' => variable_get('site_name', 'Site') . ' is currently under maintenance. We should be back shortly. Thank you for your patience.',
+        'utils_site_offline_message' => $site_name . ' is currently under maintenance. We should be back shortly. Thank you for your patience.',
         'exclude_tables'             => array(),
         'nodata_tables'              => array(
-          'cache', 'cache', 'cache_block', 'cache_block', 'cache_bootstrap', 'cache_bootstrap', 'cache_field', 'cache_field', 'cache_filter',
+          'cache', 'cache', 'cache_block', 'cache_block', 'cache_bootstrap', 'cache_bootstrap', 'cache_ds_panels', 'cache_ds_panels', 'cache_field', 'cache_field', 'cache_filter',
           'cache_filter', 'cache_form', 'cache_form', 'cache_image', 'cache_image', 'cache_menu', 'cache_menu', 'cache_page', 'cache_page',
-          'cache_path', 'cache_path', 'cache_token', 'cache_token', 'cache_update', 'cache_update', 'cache_views','cache_views',
+          'cache_path', 'cache_path', 'cache_rules', 'cache_rules', 'cache_token', 'cache_token', 'cache_update', 'cache_update', 'cache_views','cache_views',
           'cache_views_data', 'cache_views_data', 'sessions', 'sessions', 'watchdog', 'watchdog',
         ),
       ),
@@ -186,11 +194,11 @@ function bedrock_install() {
       'filters'           => array(
         'compression'                => 'gzip',
         'notify_success_enable'      => FALSE,
-        'notify_success_email'       => variable_get('site_mail', 'noreply@example.com'),
+        'notify_success_email'       => '',
         'notify_failure_enable'      => FALSE,
-        'notify_failure_email'       => variable_get('site_mail', 'noreply@example.com'),
+        'notify_failure_email'       => '',
         'utils_site_offline'         => FALSE,
-        'utils_site_offline_message' => variable_get('site_name', 'Site') . ' is currently under maintenance. We should be back shortly. Thank you for your patience.',
+        'utils_site_offline_message' => $site_name . ' is currently under maintenance. We should be back shortly. Thank you for your patience.',
         'exclude_tables'             => array(),
         'nodata_tables'              => array(),
       ),
@@ -207,7 +215,7 @@ function bedrock_install() {
       'destination_id' => 'scheduled',
       'name'           => 'Scheduled Backups Directory',
       'type'           => 'file',
-      'location'       => 'sites/default/files/backup_migrate/scheduled',
+      'location'       => conf_path() . '/files/backup_migrate/scheduled',
       'settings'       => array(
         'chmod' => 0,
         'chgrp' => 0,
@@ -257,12 +265,18 @@ function bedrock_install() {
     'status' => '1',
     'priority' => '0.5',
   );
-  
   variable_set('xmlsitemap_settings_node_page', $xmlsitemap_included);
   variable_set('xmlsitemap_settings_node_article', $xmlsitemap_included);
   variable_set('xmlsitemap_settings_node_webform', $xmlsitemap_included);
 
   
+/**
+ * Copyright Block Module
+ * *****************************************/
+  variable_set('copyright_block_inceptionyear', date('Y'));
+  variable_set('copyright_block_template', '[year] [holder]');
+
+
 /**
  * Login Destination Module
  * *****************************************/
@@ -431,17 +445,32 @@ function bedrock_install() {
 
 
 /**
+ * Path Alias
+ * *****************************************/
+  // Login link
+  db_insert('url_alias')
+    ->fields(array(
+      'source'   => 'user/login',
+      'alias'    => 'login',
+      'language' => 'und',
+    ))
+    ->execute();
+  // Logout link
+  db_insert('url_alias')
+    ->fields(array(
+      'source'   => 'user/logout',
+      'alias'    => 'logout',
+      'language' => 'und',
+    ))
+    ->execute();
+
+
+/**
  * WYSIWYG Module
  * *****************************************/
-  // Setup WYSIWYG editor for Filtered HTML input format
-  $wysiwyg = array(
-    'format'   => 'filtered_html',
-    'editor'   => 'ckeditor',
-  );
-  drupal_write_record('wysiwyg', $wysiwyg);
   $wysiwyg = array(
     'format'   => 'wysiwyg',
-    'editor'   => 'ckeditor',
+    'editor'   => 'tinymce',
   );
   drupal_write_record('wysiwyg', $wysiwyg);
 
@@ -455,30 +484,19 @@ function bedrock_install() {
     'language'    => 'en',
     'buttons'     => array(
       'default' => array(
-        'Bold'           => 1,
-        'Italic'         => 1,
-        'JustifyLeft'    => 1,
-        'JustifyCenter'  => 1,
-        'JustifyRight'   => 1,
-        'JustifyBlock'   => 1,
-        'BulletedList'   => 1,
-        'NumberedList'   => 1,
-        'Outdent'        => 1,
-        'Image'          => 1,
-        'Indent'         => 1,
-        'Undo'           => 1,
-        'Redo'           => 1,
-        'Link'           => 1,
-        'HorizontalRule' => 1,
-        'Cut'            => 1,
-        'Copy'           => 1,
-        'Paste'          => 1,
-        'Font'           => 1,
-        'FontSize'       => 1,
-        'Table'          => 1,
+        'bold'           => 1,
+        'underline'      => 1,
+        'justifyleft'    => 1,
+        'justifycenter'  => 1,
+        'justifyright'   => 1,
+        'bulllist'       => 1,
+        'numlist'        => 1,
+        'link'           => 1,
+        'copy'           => 1,
+        'paste'          => 1,
       ),
-      'imce' => array(
-        'imce' => 1,
+      'font' => array(
+        'fontsizeselect' => 1,
       ),
     ),
     'toolbar_loc'                 => 'top',
@@ -492,7 +510,7 @@ function bedrock_install() {
     'apply_source_formatting'     => 0,
     'paste_auto_cleanup_on_paste' => 0,
     'block_formats'               => 'p,address,pre,h2,h3,h4,h5,h6,div',
-    'css_setting'                 => 'none',
+    'css_setting'                 => 'theme',
     'css_path'                    => '',
     'css_classes'                 => '',
   );
@@ -500,6 +518,92 @@ function bedrock_install() {
   db_update('wysiwyg')
     ->fields(array('settings' => serialize($wysiwyg_settings)))
     ->execute();
+
+
+/**
+ * Content Type: Extras Module
+ * *****************************************/
+  $content_type_extras_default_settings = array(
+    'title_label'                              => 'Title',
+    'content_type_extras_remove_body'          => 0,
+    'node_preview'                             => 0,
+    'content_type_extras_preview_button'       => 'Preview',
+    'content_type_extras_save_and_new'         => 0,
+    'content_type_extras_save_and_new_button'  => 'Save and New',
+    'content_type_extras_save_and_edit'        => 0,
+    'content_type_extras_save_and_edit_button' => 'Save and Edit',
+    'content_type_extras_cancel'               => 0,
+    'node_options'                             => array(
+      'status'     => 'status',
+        'promote'  => 0,
+        'sticky'   => 0,
+        'revision' => 0,
+      ),
+    'node_submitted'   => 0,
+    'user_permissions' => array(
+      'create_roles' => array(
+        '5' => 5,
+        '1' => 0,
+        '2' => 0,
+        '3' => 0,
+        '4' => 0,
+      ),
+      'edit_roles' => array(
+        '5' => 5,
+        '1' => 0,
+        '2' => 0,
+        '3' => 0,
+        '4' => 0,
+      ),
+      'delete_roles' => array(
+        '5' => 5,
+        '1' => 0,
+        '2' => 0,
+        '3' => 0,
+        '4' => 0,
+      ),
+    ),
+    'content_type_extras_descriptions_required'   => 0,
+    'content_type_extras_user_permissions_select' => 'cte',
+    'content_type_extras_title_hide'              => 0,
+    'content_type_extras_title_hide_css'          => 0,
+    'content_type_extras_title_hide_front'        => 1,
+    'content_type_extras_top_buttons'             => array(
+      'manage_fields' => 0,
+      'node_edit'     => 0,
+    ),
+    'xmlsitemap_settings' => array(
+      'status'   => '1',
+      'priority' => '0.5',
+    ),
+  );
+  variable_set('content_type_extras_default_settings', $content_type_extras_default_settings);
+
+
+/**
+ * Prepro module (for Sassy module)
+ * *****************************************/
+  $prepro = array(
+    'additional' => array(
+      'sassy'   => array(
+        'debug' => '1',
+        'style' => 'nested',
+      ),
+    ),
+    'filetypes' => array(
+      'sass' => array(
+        'preprocessor'   => 'sassy',
+        'cache'          => 'onload',
+        'cache_location' => 'public://prepro/',
+      ),
+      'scss' => array(
+        'preprocessor'   => 'sassy',
+        'cache'          => 'onload',
+        'cache_location' => 'public://prepro/',
+      ),
+    ),
+  );
+  variable_set('prepro', $prepro);
 
 
 /**
@@ -552,10 +656,6 @@ function bedrock_install() {
     'edit any page content',
     'edit own article content',
     'edit own page content',
-    'override article promote to front page option',
-    'override article published option',
-    'override page promote to front page option',
-    'override page published option',
     'revert revisions',
     'use text format wysiwyg',
     'view own unpublished content',
@@ -583,46 +683,6 @@ function bedrock_install() {
 
 
 /**
- * Content Type: Extras
- * *****************************************/
-  $node_options = array(
-    'status' => 'status',
-    'promote' => 0,
-    'sticky' => 0,
-    'revision' => 0,
-  );
-  variable_set('content_type_extras_node_options', serialize($node_options));
-  variable_set('content_type_extras_node_preview', '0');
-  variable_set('content_type_extras_node_save_edit', '0');
-  variable_set('content_type_extras_node_save_new', '0');
-  variable_set('content_type_extras_node_submitted', 0);
-  $create_permissions = array(
-    1 => 0,
-    2 => 0,
-    3 => 0,
-    4 => '4',
-    5 => '5',
-  );
-  variable_set('content_type_extras_user_permissions_create', serialize($create_permissions));
-  $delete_permissions = array(
-    1 => 0,
-    2 => 0,
-    3 => 0,
-    4 => '4',
-    5 => '5',
-  );
-  variable_set('content_type_extras_user_permissions_delete', serialize($delete_permissions));
-  $edit_permissions = array(
-    1 => 0,
-    2 => 0,
-    3 => 0,
-    4 => '4',
-    5 => '5',
-  );
-  variable_set('content_type_extras_user_permissions_create', serialize($edit_permissions));
-
-
-/**
  * Admin Theme (CORE)
  * *****************************************/
   variable_set('admin_theme', 'doohickey');
@@ -638,16 +698,51 @@ function bedrock_install() {
 
 
 /**
+ * Date & Time/Regional Settings
+ * *****************************************/
+  // Date & Time
+  variable_set('date_format_long', 'l, F j, Y - g:ia');
+  variable_set('date_format_medium', 'F j, Y - g:ia');
+  variable_set('date_format_short', 'M j Y - g:ia');
+  // Regional
+  variable_set('date_first_day', 0);
+
+
+/**
+ * Promote Module (CUSTOM)
+ * *****************************************/
+  variable_set('promote_link', 'http://itcoloradosprings.com');
+  variable_set('promote_link_text', 'IT Specialists, Inc.');
+  variable_set('promote_text', 'Developed by !link');
+
+
+/**
+ * System File Paths
+ * *****************************************/
+  // Public file path
+  variable_set('file_public_path' , conf_path() . '/files');
+  
+  // Temporary file path
+  variable_set('file_temporary_path', conf_path() . '/files/tmp');
+  
+  // Private file path
+  $private_path = conf_path() . '/private';
+  // Emulate what happens when setting up the private file path manually...
+  $form_element = array(
+    '#value' => $private_path,
+    '#name'  => 'file_private_path',
+  );
+  system_check_directory($form_element);
+  // Set the private file path
+  variable_set('file_private_path', $private_path);
+
+
+/**
  * Miscellaneous Settings
  * *****************************************/
-  // Disable Core's poorman's cron functionality
-  variable_set('cron_safe_threshold', '0');
   // Set anonymous user to Guest
   variable_set('anonymous', 'Guest');
   // Only administrators can create accounts
   variable_set('user_register', '0');
-  // Set the temporary file path
-  variable_set('file_temporary_path', 'sites/default/files/tmp');
   // Set default country
   variable_set('site_default_country', 'US');
-}
