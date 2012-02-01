@@ -53,7 +53,8 @@ dependencies[] = devel
 ;dependencies[] = drupalforfirebug_preprocess
 ; prepro is required by sassy
 dependencies[] = prepro
-dependencies[] = sassy
+; There is currently a bug in Sassy. I filed an issue...#1425136
+;dependencies[] = sassy
 
 ;fields
 ;--------------
