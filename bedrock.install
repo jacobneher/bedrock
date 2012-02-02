@@ -746,3 +746,4 @@ function bedrock_install() {
   variable_set('user_register', '0');
   // Set default country
   variable_set('site_default_country', 'US');
+}
