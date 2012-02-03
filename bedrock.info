@@ -70,7 +70,8 @@ dependencies[] = spamspan
 
 ;javascript_utilities
 ;--------------
-dependencies[] = jquery_update
+; There is a bug with this and admin module.
+;dependencies[] = jquery_update
 
 ;media
 ;--------------
