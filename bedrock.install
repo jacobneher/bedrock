@@ -151,6 +151,7 @@ function bedrock_install() {
   );
   
   variable_set('admin_tools_custom_links', $admin_tools_links);
+  
 
 /**
  * Dev Banner Module
@@ -539,7 +540,7 @@ function bedrock_install() {
  * *****************************************/
   $content_type_extras_default_settings = array(
     'title_label'                              => 'Title',
-    'content_type_extras_remove_body'          => 0,
+    'content_type_extras_remove_body'          => 1,
     'node_preview'                             => 0,
     'content_type_extras_preview_button'       => 'Preview',
     'content_type_extras_save_and_new'         => 0,
@@ -600,8 +601,9 @@ function bedrock_install() {
   $prepro = array(
     'additional' => array(
       'sassy'   => array(
-        'debug' => '1',
-        'style' => 'nested',
+        'debug'  => '1',
+        'errors' => 'output',
+        'style'  => 'compressed',
       ),
     ),
     'filetypes' => array(
@@ -680,7 +682,7 @@ function bedrock_install() {
 
   // Create a default role for site administrators, with all available permissions assigned.
   $site_admin_role = new stdClass();
-  $site_admin_role->name = 'IT Specialists';
+  $site_admin_role->name = 'Super Administrator';
   $site_admin_role->weight = 4;
   user_role_save($site_admin_role);
   user_role_grant_permissions($site_admin_role->rid, array_keys(module_invoke_all('permission')));
@@ -725,9 +727,9 @@ function bedrock_install() {
 /**
  * Promote Module (CUSTOM)
  * *****************************************/
-  variable_set('promote_link', 'http://itcoloradosprings.com');
-  variable_set('promote_link_text', 'IT Specialists, Inc.');
-  variable_set('promote_text', 'Developed by !link');
+  variable_set('promote_link', 'http://threeshadowsmedia.com');
+  variable_set('promote_link_text', 'Three Shadows Media');
+  variable_set('promote_text', 'Proudly developed and managed by !link');
 
 
 /**
