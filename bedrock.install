@@ -780,4 +780,11 @@ function bedrock_install() {
   variable_set('user_register', '0');
   // Set default country
   variable_set('site_default_country', 'US');
+  // Create a Home link in the main menu.
+  $item = array(
+    'link_title' => st('Home'),
+    'link_path'  => '<front>',
+    'menu_name'  => 'main-menu',
+  );
+  menu_link_save($item);
 }
