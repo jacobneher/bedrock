@@ -432,61 +432,6 @@ function bedrock_install() {
 
 
 /**
- * WYSIWYG Module
- * *****************************************/
-  $wysiwyg = array(
-    'format'   => 'wysiwyg',
-    'editor'   => 'tinymce',
-  );
-  drupal_write_record('wysiwyg', $wysiwyg);
-
-  // Have to separate the settings out from the db call above because the settings have to be serialized
-  // Not sure why other setups, like backup_migrate_profiles doesn't require this additional step ???
-  $wysiwyg_settings = array(
-    'default'     => 1,
-    'user_choose' => 0,
-    'show_toggle' => 0,
-    'theme'       => 'advanced',
-    'language'    => 'en',
-    'buttons'     => array(
-      'default' => array(
-        'bold'           => 1,
-        'underline'      => 1,
-        'justifyleft'    => 1,
-        'justifycenter'  => 1,
-        'justifyright'   => 1,
-        'bulllist'       => 1,
-        'numlist'        => 1,
-        'link'           => 1,
-        'copy'           => 1,
-        'paste'          => 1,
-      ),
-      'font' => array(
-        'fontsizeselect' => 1,
-      ),
-    ),
-    'toolbar_loc'                 => 'top',
-    'toolbar_align'               => 'left',
-    'path_loc'                    => 'none',
-    'resizing'                    => 0,
-    'verify_html'                 => 1,
-    'preformatted'                => 1,
-    'convert_fonts_to_spans'      => 1,
-    'remove_linebreaks'           => 1,
-    'apply_source_formatting'     => 0,
-    'paste_auto_cleanup_on_paste' => 0,
-    'block_formats'               => 'p,address,pre,h2,h3,h4,h5,h6,div',
-    'css_setting'                 => 'theme',
-    'css_path'                    => '',
-    'css_classes'                 => '',
-  );
-  // Not setting a condition since we want both records to get these settings...
-  db_update('wysiwyg')
-    ->fields(array('settings' => serialize($wysiwyg_settings)))
-    ->execute();
-
-
-/**
  * Content Type: Extras Module
  * *****************************************/
   $content_type_extras_default_settings = array(
