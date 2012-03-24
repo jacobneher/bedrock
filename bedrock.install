@@ -312,10 +312,66 @@ function bedrock_install() {
  * Text Formats, Filtering, and Paths
  * *****************************************/
   // Add text formats.
+  $text_editor_format = array(
+    'format'  => 'text_editor',
+    'name'    => 'Text Editor',
+    'weight'  => 0,
+    'filters' => array(
+      // URL filter.
+      'filter_url' => array(
+        'weight'   => 0,
+        'status'   => 1,
+        'settings' => array(
+          'filter_url_length' => '72',
+        )
+      ),
+      // HTML corrector filter.
+      'filter_htmlcorrector' => array(
+        'weight' => 10,
+        'status' => 1,
+      ),
+      // Spamspan filter.
+      'spamspan' => array(
+        'weight' => 10,
+        'status' => 1,
+      ),
+    ),
+  );
+  $text_editor_format = (object) $text_editor_format;
+  filter_format_save($text_editor_format);
+  
+  $adv_text_editor_format = array(
+    'format'  => 'advanced_text_editor',
+    'name'    => 'Advanced Text Editor',
+    'weight'  => 10,
+    'filters' => array(
+      // URL filter.
+      'filter_url' => array(
+        'weight'   => 0,
+        'status'   => 1,
+        'settings' => array(
+          'filter_url_length' => '72',
+        )
+      ),
+      // HTML corrector filter.
+      'filter_htmlcorrector' => array(
+        'weight' => 10,
+        'status' => 1,
+      ),
+      // Spamspan filter.
+      'spamspan' => array(
+        'weight' => 10,
+        'status' => 1,
+      ),
+    ),
+  );
+  $adv_text_editor_format = (object) $adv_text_editor_format;
+  filter_format_save($adv_text_editor_format);
+  
   $filtered_html_format = array(
     'format'  => 'filtered_html',
     'name'    => 'Filtered HTML',
-    'weight'  => 0,
+    'weight'  => 20,
     'filters' => array(
       // URL filter.
       'filter_url' => array(
@@ -330,7 +386,7 @@ function bedrock_install() {
         'weight'   => 1,
         'status'   => 1,
         'settings' => array(
-          'allowed_html'         => '<a> <em> <strong> <cite> <blockquote> <code> <ul> <ol> <li> <dl> <dt> <dd>',
+          'allowed_html'         => '<a> <em> <strong> <cite> <code> <ul> <ol> <li> <dl> <dt> <dd> <h2> <h3> <h4> <h5> <h6> <br>',
           'filter_html_help'     => 1,
           'filter_html_nofollow' => 0,
         ),
@@ -455,27 +511,6 @@ function bedrock_install() {
   $full_html_breaking_format = (object) $full_html_breaking_format;
   filter_format_save($full_html_breaking_format);
 
-  // Add Filter Format - Setup WYSIWYG filter format
-  $wysiwyg_format = array(
-    'format' => 'wysiwyg',
-    'name' => 'WYSIWYG',
-    'weight' => 15,
-    'filters' => array(
-      // HTML corrector filter.
-      'filter_htmlcorrector' => array(
-        'weight' => 10,
-        'status' => 1,
-      ),
-      // Spamspan filter.
-      'spamspan' => array(
-        'weight' => 10,
-        'status' => 1,
-      ),
-    ),
-  );
-  $wysiwyg_format = (object) $wysiwyg_format;
-  filter_format_save($wysiwyg_format);
-
 
 /**
  * Path Alias
@@ -501,11 +536,17 @@ function bedrock_install() {
 /**
  * WYSIWYG Module
  * *****************************************/
-  $wysiwyg = array(
-    'format'   => 'wysiwyg',
-    'editor'   => 'tinymce',
+  $text_editor_wysiwyg = array(
+    'format' => 'text_editor',
+    'editor' => 'tinymce',
   );
-  drupal_write_record('wysiwyg', $wysiwyg);
+  drupal_write_record('wysiwyg', $text_editor_wysiwyg);
+  
+  $adv_text_editor_wysiwyg = array(
+    'format' => 'advanced_text_editor',
+    'editor' => 'tinymce',
+  );
+  drupal_write_record('wysiwyg', $adv_text_editor_wysiwyg);
 
   // Have to separate the settings out from the db call above because the settings have to be serialized
   // Not sure why other setups, like backup_migrate_profiles doesn't require this additional step ???
