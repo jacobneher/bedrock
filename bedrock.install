@@ -370,23 +370,23 @@ function bedrock_install() {
 
   $full_html_format = array(
     'format' => 'full_html',
-    'name' => 'Full HTML',
-    'weight' => 1,
+    'name'    => 'Full HTML',
+    'weight'  => 1,
     'filters' => array(
       // URL filter.
       'filter_url' => array(
-        'weight' => 0,
-        'status' => 1,
+        'weight'   => 0,
+        'status'   => 1,
         'settings' => array(
           'filter_url_length' => '72',
         )
       ),
       // Spamspan filter.
       'spamspan' => array(
-        'weight' => 10,
-        'status' => 1,
+        'weight'   => 10,
+        'status'   => 1,
         'settings' => array(
-          'spamspan_at' => ' [at] ',
+          'spamspan_at'          => ' [at] ',
           'spamspan_use_graphic' => 0,
         ),
       ),
@@ -416,18 +416,18 @@ function bedrock_install() {
     'filters' => array(
       // URL filter.
       'filter_url' => array(
-        'weight' => 0,
-        'status' => 1,
+        'weight'   => 0,
+        'status'   => 1,
         'settings' => array(
           'filter_url_length' => '72',
         )
       ),
       // Spamspan filter.
       'spamspan' => array(
-        'weight' => 10,
-        'status' => 1,
+        'weight'   => 10,
+        'status'   => 1,
         'settings' => array(
-          'spamspan_at' => ' [at] ',
+          'spamspan_at'          => ' [at] ',
           'spamspan_use_graphic' => 0,
         ),
       ),
