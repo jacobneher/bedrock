@@ -465,52 +465,6 @@ function bedrock_install() {
   $full_html_format = (object) $full_html_format;
   filter_format_save($full_html_format);
 
-  $full_html_breaking_format = array(
-    'format' => 'full_html_w_breaking',
-    'name' => 'Full HTML w/ Breaking',
-    'weight' => 1,
-    'filters' => array(
-      // URL filter.
-      'filter_url' => array(
-        'weight'   => 0,
-        'status'   => 1,
-        'settings' => array(
-          'filter_url_length' => '72',
-        )
-      ),
-      // Spamspan filter.
-      'spamspan' => array(
-        'weight'   => 10,
-        'status'   => 1,
-        'settings' => array(
-          'spamspan_at'          => ' [at] ',
-          'spamspan_use_graphic' => 0,
-        ),
-      ),
-      // HTML corrector filter.
-      'filter_htmlcorrector' => array(
-        'weight' => 10,
-        'status' => 1,
-      ),
-      // Line break filter.
-      'filter_autop' => array(
-        'weight' => 2,
-        'status' => 1,
-      ),
-      // Pathologic filter.
-      'pathologic' => array(
-        'weight'   => 15,
-        'status'   => 1,
-        'settings' => array(
-          'local_paths' => 0,
-          'absolute'    => 1,
-        ),
-      ),
-    ),
-  );
-  $full_html_breaking_format = (object) $full_html_breaking_format;
-  filter_format_save($full_html_breaking_format);
-
 
 /**
  * Path Alias
