@@ -101,80 +101,6 @@ function install_omega_subtheme() {
         '#required'      => TRUE,
         '#weight'        => 30,
       ),
-      'site' => array(
-        '#type'          => 'select',
-        '#title'         => st('Site directory'),
-        '#description'   => st('Which site directory will the new theme to be placed in? If in doubt, select &ldquo;all&rdquo;.'),
-        '#options'       => find_omega_sites(),
-        '#default_value' => array('default'),
-        '#required'      => TRUE,
-        '#weight'        => 40,
-      ),
-      'parent' => array(
-        '#type'          => 'select',
-        '#title'         => st('Starter theme'),
-        '#description'   => st('The parent theme for the new theme. If in doubt, select &ldquo;Omega XHTML Starter Kit&rdquo;.'),
-        '#options'       => $omega_based,
-        '#default_value' => 'starterkit_omega_html5',
-        '#required'      => TRUE,
-        '#weight'        => 50,
-      ),
-    ),
-    'additional_settings' => array(
-      '#type'        => 'fieldset',
-      '#title'       => st('Additional settings'),
-      '#collapsible' => 1,
-      '#weight'      => 100,
-      'stylesheets' => array(
-        '#type'        => 'fieldset',
-        '#title'       => st('Stylesheets'),
-        '#description' => st('You may create new stylesheets that will be included with this theme.'),
-        '#collapsible' => 1,
-        '#weight'      => 10,
-        'additional_sheets' => array(
-          '#type'        => 'textfield',
-          '#title'       => st('Stylesheet name(s)'),
-          '#description' => st('Define new (blank) stylesheets that you would like to include with this theme, separated by a space.'),
-          '#weight'      => 10,
-        ),
-      ),
-      'grid' => array(
-        '#type'        => 'fieldset',
-        '#title'       => st('Grid'),
-        '#collapsible' => 1,
-        '#weight'      => 20,
-        'responsive_grid' => array(
-          '#type'  => 'checkbox',
-          '#title' => st('Enable responsive grid layout'),
-        ),
-      ),
-      'debug' => array(
-        '#type'        => 'fieldset',
-        '#title'       => st('Debug options'),
-        '#collapsible' => 1,
-        '#weight'      => 30,
-        'debug_blocks_active' => array(
-          '#type'  => 'checkbox',
-          '#title' => st('Show debug blocks by default'),
-        ),
-        'debug_grid_active' => array(
-          '#type'  => 'checkbox',
-          '#title' => st('Show grid overlay by default'),          
-        ),
-      ),
-      'miscellaneous' => array(
-        '#type'        => 'fieldset',
-        '#title'       => st('Miscellaneous'),
-        '#collapsible' => 1,
-        '#weight'      => 40,
-        'enable_theme' => array(
-          '#type'          => 'checkbox',
-          '#title'         => st('Enable theme and set as default'),
-          '#description'   => st('If checked, this theme will be enabled and be set as the default theme for this website.'),
-          '#default_value' => 1,
-          '#weight'        => 10,
-        ),
-      ),
     ),
     'submit' => array(
       '#type'   => 'submit',
@@ -183,18 +109,8 @@ function install_omega_subtheme() {
     )
   );
   
-  if (module_exists('less')) {
-    $form['additional_settings']['stylesheets']['less'] = array(
-      '#type'   => 'fieldset',
-      '#title'  => st('LESS CSS Preprocessing'),
-      '#weight' => 30,
-      'less_preprocessing' => array(
-        '#type'          => 'checkbox',
-        '#title'         => st('Make all css files in this subtheme LESS CSS compatible'),
-        '#default_value' => 1,
-      ),
-    );
-  }
+  $form['#validate'][] = 'bedrock_install_omega_subtheme_validate';
+  $form['#submit'][] = 'bedrock_install_omega_subtheme_submit';
   
   return $form;
 }
@@ -202,12 +118,8 @@ function install_omega_subtheme() {
 /**
  * Validation handler for install_omega_subtheme function.
  */
-function install_omega_subtheme_validate(&$form, &$form_state) {
-  // Check that the system name of the theme is valid
-  if ($exists = drupal_get_path('theme', $form_state['values']['sysname'])) {
-    form_set_error('sysname', t('A theme with this <em>System name</em> already exists at %exists. Please choose a different one.', array('%exists' => $exists)));
-  }
-  elseif (!preg_match('/^[abcdefghijklmnopqrstuvwxyz][abcdefghijklmnopqrstuvwxyz0-9_]*$/', $form_state['values']['sysname'])) {
+function bedrock_install_omega_subtheme_validate(&$form, &$form_state) {
+  if (!preg_match('/^[abcdefghijklmnopqrstuvwxyz][abcdefghijklmnopqrstuvwxyz0-9_]*$/', $form_state['values']['sysname'])) {
     // Zen's documentations say that no digits should be used in theme system
     // names, but that restriction seems to be arbitrary - in actuality, digits
     // can be anywhere except first character (because function names will be
@@ -220,92 +132,33 @@ function install_omega_subtheme_validate(&$form, &$form_state) {
     // http://stackoverflow.com/questions/1930487/will-a-z-ever-match-accented-characters-in-preg-pcre
     form_set_error('sysname', t('The <em>System name</em> may only consist of lowercase letters and the underscore character.'));
   }
-  elseif (!preg_match('/^[abcdefghijklmnopqrstuvwxyz0-9_-\s]*$/', $form_state['values']['additional_sheets'])) {
-    form_set_error('additional_sheets', t('There is an issue with one or more of the custom css filenames entered.'));
-  }
-  elseif (count(form_get_errors()) === 0) {
-    // We only want to continue if all required form elements were filled out -
-    // http://drupal.org/node/631002
-    // Test if we can make these directories. It's pretty dumb to be actually
-    // modifying the disk in a validate hook, but I don't know of any better way
-    // to test if a directory can be made than going ahead and trying to make
-    // it, and I think crashing out with an error in the submit hook is worse,
-    // because it won't take the user back to the form with the previous values
-    // already filled in, among other reasons.
-    $site_dir = 'sites/' . $form_state['values']['site'];
-    $themes_dir = $site_dir . '/themes';
-    if (!file_exists($themes_dir) && !@mkdir($themes_dir, 0755)) {
-      form_set_error('site', t('The <em>themes</em> directory for the %site site directory does not exist, and it could not be created automatically. This is likely a permissions problem. Check that the web server has permissions to write to the %site directory, or create the %themes directory manually and try again.', array('%site' => $site_dir, '%themes' => $themes_dir)), 'error');
-    }
-    else {
-      $dir = "{$themes_dir}/{$form_state['values']['sysname']}";
-      if (file_exists($dir)) {
-        form_set_error('sysname', t('That <em>System name</em> value cannot be used with that <em>Site directory</em> value. Omegaphile wants to create and use the directory %dir, but a file or directory with that name already exists.', array('%dir' => $dir)));
-      }
-      else {
-        if (!@mkdir($dir)) {
-          form_set_error('sysname', t('The directory %dir could not be created. This is likely a permissions problem. Check that the web server has permissions to write to the %themes directory.', array('%dir' => $dir, '%themes' => $themes_dir)));
-        }
-      }
-    }
-  }
 }
 
 /**
  * Submission handler for install_omega_subtheme function.
  */
-function install_omega_subtheme_submit(&$form, &$form_state) {
-  $omega_dir = drupal_get_path('theme', 'omega');
+function bedrock_install_omega_subtheme_submit(&$form, &$form_state) {
   $info = array(
-    't_name'      => $form_state['values']['sysname'],
-    't_dir'       => "sites/{$form_state['values']['site']}/themes/{$form_state['values']['sysname']}",
-    'parent'      => $form_state['values']['parent'],
-    'parent_dir'  => drupal_get_path('theme', $form_state['values']['parent']),
-    'omega_dir'   => $omega_dir,
-    'form_values' => $form_state['values'],
+    'subtheme_name' => $form_state['values']['sysname'],
+    'friendly_name' => $form_state['values']['friendly'],
+    'subtheme_desc' => $form_state['values']['description'],
+    'initial_dir'   => 'sites/all/themes/subtheme',
   );
-
-  $cur_path = '';
-  $file_list = populate_omega_files($info['parent_dir'], $cur_path);
-
-  $files = array();
-  $weight = -10;
-  foreach ($file_list as $file => $type) {
-    $files[$file] = array(
-      'from'   => "{$info['parent_dir']}/{$file}",
-      'type'   => $type,
-      'repl'   => array(),
-      'weight' => $weight += 10,
-    );
-  }
   
-  // Call alter hooks.
-  // We can't do module_invoke_all() because it doesn't pass $files by reference
-  // to the hook implementations. We'll do it manually. (Thanks, catch in
-  // #drupal!)
-  foreach (module_implements('subtheme_alter') as $module) {
-    $function = $module . '_subtheme_alter';
-    if ($function($files, $info) === FALSE) {
-      // One of the hook implementations wants to stop everything. It should
-      // have shown an error with drupal_set_message. Return without processing
-      // any files.
-      return;
-    }
-  }
   // Process the $files array.
-  if (process_subtheme($files, $info['t_dir']) !== FALSE) {
-    drupal_set_message(t('A new subtheme was successfully created in %dir. You may now !config_link.', array('%dir' => $info['t_dir'], '!config_link' => l('configure your new theme', 'admin/flush-cache/cache', array('query' => array('destination' => 'admin/appearance/settings/'. $form_state['values']['sysname']))))));
+  if (process_subtheme($info) !== FALSE) {
+    drupal_set_message(t('A new subtheme was successfully created. You may now !config_link.', array('!config_link' => l('configure your new theme', 'admin/flush-cache/cache', array('query' => array('destination' => 'admin/appearance/settings/'. $form_state['values']['sysname']))))));
   }
 
   // Flush the cached theme data so the new subtheme appears in the parent
   // theme list.
   system_rebuild_theme_data();
-
-  if ($form_state['values']['enable_theme']) {
-    theme_enable(array($form_state['values']['sysname']));
-    theme_disable(array('bartik'));
-    variable_set('theme_default', $form_state['values']['sysname']);
-  }
+  
+  // Enable custom theme as default...
+  theme_enable(array($form_state['values']['sysname']));
+  // ...and disable Drupal's default Bartik theme
+  theme_disable(array('bartik'));
+  variable_set('theme_default', $form_state['values']['sysname']);
   
   // Set the 'Main Page Content' block to the content region
   db_update('block')
@@ -320,255 +173,30 @@ function install_omega_subtheme_submit(&$form, &$form_state) {
     ->execute();
 }
 
-
-/**
- * List this Drupal installation's site directories.
- *
- * @return
- *   An array of directories in the sites directory.
- */
-function find_omega_sites() {
-  $sites = array();
-  if ($h = opendir('sites')) {
-    while (($site = readdir($h)) !== FALSE) {
-      $sitepath = 'sites/' . $site;
-      // Don't allow dot files or links for security reasons (redundancy, too)
-      if (is_dir($sitepath) && !is_link($sitepath) && $site{0} !== '.') {
-        $sites[] = $site;
-      }
-    }
-    closedir($h);
-    return drupal_map_assoc($sites);
-  }
-  else {
-    drupal_set_message(t('The <em>sites</em> directory could not be read.'), 'error');
-    return array();
-  }
-}
-
-/**
- * Recursively create a list of files in a directory.
- *
- * @param $dir
- *   Directory to add files from
- * @param $cur_path
- *   Path to start from
- * @return
- *   An array of file names.
- */
-function populate_omega_files($dir, $cur_path) {
-  $files = array();
-  if ($cur_path !== '') {
-    $cur_path .= '/';
-  }
-  $h = opendir("{$dir}/{$cur_path}");
-  while (($file = readdir($h)) !== FALSE) {
-    // Don't copy hidden files
-    if ($file{0} !== '.') {
-      if (is_dir("{$dir}/{$cur_path}{$file}")) {
-        $files["{$cur_path}{$file}"] = 'dir';
-        $files = array_merge($files, populate_omega_files($dir, "{$cur_path}{$file}"));
-      }
-      else {
-        $files["{$cur_path}{$file}"] = 'file';
-      }
-    }
-  }
-  return $files;
-}
-
 /**
  * Process the file queue.
  *
  * @param $files
  *   The files to process.
  */
-function process_subtheme($files, $t_dir) {
-  // Reorder the queue according to weight
-  $weights = array();
-  foreach ($files as $file) {
-    $weights[] = $file['weight'];
-  }
-  array_multisort($weights, SORT_ASC, $files);
-
-  foreach ($files as $file => $opts) {
-    $dest = "{$t_dir}/{$file}";
-    // If there's no "from", create a blank file/dir.
-    if ($opts['type'] === 'dir') {
-      // We can't copy directories, so don't bother checking the 'from' value.
-      // Just make an empty directory.
-      mkdir($dest, 0755);
-    }
-    elseif ($opts['type'] === 'file') {
-      if ($opts['from'] === '') {
-        // No 'from' value, so just make a blank file
-        touch($dest);
-        
-        // If we want to add contents to a new file...
-        $h = fopen($dest, 'w');
-        fwrite($h, $opts['repl']);
-        fclose($h);
-      }
-      else {
-        // If the file is probably not a text, code or CSS file…
-        if (!preg_match('/\.(php|css|js|info|inc|html?|te?xt)$/', $file)) {
-          // Simply copy the file. Don't do replacements.
-          copy($opts['from'], $dest);
-        }
-        else {
-          // Open the file, do replacements and save it
-          $text = file_get_contents($opts['from']);
-          $text = preg_replace(array_keys($opts['repl']), array_values($opts['repl']), $text);
-          // Avoid file_put_contents() for PHP 4 l4mz0rz
-          $h = fopen($dest, 'w');
-          fwrite($h, $text);
-          fclose($h);
-        }
-      }
-    }
-  }
-}
-
-/**
- * Sets replacement patterns to change the associated theme files.
- *
- * @param $files
- *   The files to process.
- *   
- * @param $info
- *   The information about the theme to create
- * 
- */
-function bedrock_subtheme_alter(&$files, $info) {
-  $weight = 59990;
-  // Rename the .info file, and replace instances of the parent name with
-  // that of the child name. Also, add the name and description.
-  $dotinfo = $info['t_name'] . '.info';
-  $files[$dotinfo] = $files[$info['parent'] . '.info'];
-  $files[$dotinfo]['repl'] = array();
-  $files[$dotinfo]['repl']["/{$info['parent']}/"] = $info['t_name'];
-  $files[$dotinfo]['repl']['/^name\s*=.*/m'] = 'name = ' . $info['form_values']['friendly'];
-  $files[$dotinfo]['repl']['/^description\s*=.*/m'] = 'description = ' . $info['form_values']['description'];
-  $files[$dotinfo]['repl']['/\n; IMPORTANT: DELETE THESE TWO LINES IN YOUR SUBTHEME\n\nhidden = TRUE\nstarterkit = TRUE\n/'] = '';
-  // Remove packaging robot stuff
-  $files[$dotinfo]['repl']['/^; Information added by drupal\.org packaging script on .+$/m'] = '';
-  $files[$dotinfo]['repl']['/^(version|core|project|datestamp) = ".+$/m'] = '';
-
-  // Determine if LESS CSS styling has been selected
-  if ($info['form_values']['less_preprocessing']) {
-    foreach (array_keys($files) as $file) {
-      if (strpos($file, '.css')) {
-        $files[$file . '.less'] = $files[$file];
-        unset($files[$file]);
-      }
-    }
-    
-    // Putting [ ] around regex pattern so that the pattern doesn't "leak" to other stylesheets
-    // that we don't want to change
-    $files[$dotinfo]['repl']["/(\[|\')global\.css(\]|\')/"] = '${1}global.css.less${2}';
-  }
+function process_subtheme($info) {
+  $subtheme_dir = "sites/default/themes/{$info['subtheme_name']}";
+  // Need to rename 'subtheme' directory
+  rename('sites/default/themes/subtheme', $subtheme_dir);
   
-  // Additional Stylesheets
-  if ($info['form_values']['additional_sheets']) {
-    $sheets = explode(' ', $info['form_values']['additional_sheets']);
-    $add_stylesheets = "; ------- Stylesheets created with installation profile\n";
-    $stylesheet_settings = '';
-    $custom_css_weight = 20;
-    foreach ($sheets as $sheet) {
-      $stylesheet = $sheet . '.css' . ($info['form_values']['less_preprocessing'] ? '.less' : '');
-      
-      $files["css/$stylesheet"] = array(
-        'from'   => '', // Left empty since we are creating the file
-        'type'   => 'file',
-        'repl'   => '',
-        'weight' => 300, // This has to be set higher than the base 'css' folder creation, which is set at 250
-      );
-      
-      // Provide a nicer name for the theme settings page
-      $stylesheet_parts = explode('.', $stylesheet);
-      $stylesheet_name = ucwords(str_replace(array('-', '_'), ' ', $stylesheet_parts[0]));
-      
-      $add_stylesheets .= "css[$stylesheet][name] = $stylesheet_name Styles\ncss[$stylesheet][description] = Declared in installation profile.\ncss[$stylesheet][options][weight] = $custom_css_weight\n\n";
-      
-      $stylesheet_settings .= "\nsettings[alpha_css][$stylesheet] = '$stylesheet'";
-      
-      $custom_css_weight++;
-    }
-    
-    
-    $files[$dotinfo]['repl']["/; THEME SETTINGS \(DEFAULTS\)\n/"] = $add_stylesheets . "; THEME SETTINGS (DEFAULTS)\n";
-    if ($info['form_values']['less_preprocessing']) {
-      $files[$dotinfo]['repl']["/settings\[alpha_css\]\[global\.css\.less\] = 'global\.css\.less'/"] = "settings[alpha_css][global.css.less] = 'global.css.less'" . $stylesheet_settings;
-    }
-    else {
-      $files[$dotinfo]['repl']["/settings\[alpha_css\]\[global\.css\] = 'global\.css'/"] = "settings[alpha_css][global.css] = 'global.css'" . $stylesheet_settings;
-    }
-  }
+  // Need to rename the .info file
+  rename("$subtheme_dir/YOURTHEME.info", "$subtheme_dir/{$info['subtheme_name']}.info");
   
-  // Renaming the css files
-  foreach (array_keys($files) as $file) {
-    if (strpos($file, '.css') && strpos($file, 'YOURTHEME')) {
-      $files[preg_replace('/YOURTHEME/', str_replace('_', '-' , $info['t_name']), $file)] = $files[$file];
-      unset($files[$file]);
-    }
-  }
-
-  // Set a copyright notice in the footer
-  $notice = "<?php\n";
-  $notice .= "/**\n";
-  $notice .= " * Implements hook_preprocess_region().\n";
-  $notice .= " */\n";
-  $notice .= 'function ' . $info['t_name'] . '_alpha_preprocess_region(&$vars) {' . "\n";
-  $notice .= "  if (\$vars['region'] == 'footer_second') {\n";
-  $notice .= "    \$vars['content'] .= '<div id=\"copyright-notice\">';\n";
-  $notice .= "    \$start_year = 2011;\n";
-  $notice .= "    \$current_year = date('Y');\n";
-  $notice .= "    if (\$current_year > \$start_year) {\n";
-  $notice .= "      \$printed_year = \$start_year . '-' . \$current_year;\n";
-  $notice .= "    }\n";
-  $notice .= "    else {\n";
-  $notice .= "      \$printed_year = \$start_year;\n";
-  $notice .= "    }\n";
-  $notice .= "    \$vars['content'] .= '&#169; ' . \$printed_year . ' ' . variable_get('site_name', '') . ' - All Rights Reserved.';\n";
-  $notice .= "    \$vars['content'] .= '</div>';\n";
-  $notice .= "  }\n";
-  $notice .= '}';
-
-  $files["preprocess/preprocess-region.inc"] = array(
-    'from'   => '', // Left empty since we are creating the file
-    'type'   => 'file',
-    'repl'   => $notice,
-    'weight' => 500,
-  );
+  // Make customized changes to .info file
+  // Open the file, do replacements and save it
+  $text = file_get_contents("$subtheme_dir/{$info['subtheme_name']}.info");
+  $text = str_replace('[[subtheme-name]]', $info['friendly_name'], $text);
+  $text = str_replace('[[subtheme-desc]]', $info['subtheme_desc'], $text);
+  file_put_contents("$subtheme_dir/{$info['subtheme_name']}.info", $text);
   
-  // Responsive grid settings
-  if (!$info['form_values']['responsive_grid']) {
-    $files[$dotinfo]['repl']["/settings\[alpha_responsive\] = '1'/"] = "settings[alpha_responsive] = '0'";
-    $files[$dotinfo]['repl']["/settings\[alpha_libraries\]\[omega_mediaqueries\] = 'omega_mediaqueries'/"] = "settings[alpha_libraries][omega_mediaqueries] = ''";
-  }
-  
-  // Debug settings
-  if (!$info['form_values']['debug_blocks_active']) {
-    $files[$dotinfo]['repl']["/settings\[alpha_debug_block_active\] = '1'/"] = "settings[alpha_debug_block_active] = '0'";
-  }
-  if (!$info['form_values']['debug_grid_active']) {
-    $files[$dotinfo]['repl']["/settings\[alpha_debug_grid_active\] = '1'/"] = "settings[alpha_debug_grid_active] = '0'";
-  }
-  
-  // I just don't like the text used for global.css name by default...
-  $files[$dotinfo]['repl']["/Your custom global styles/"] = "Global Styles";
-
-  // The roles set by Omega by default don't work for this install profile...
-  // -- set one of the default roles to the rid that we want to be active
-  $files[$dotinfo]['repl']["/settings\[alpha_debug_grid_roles\]\[1\] = '1'/"] = "settings[alpha_debug_grid_roles][5] = '5'";
-  // -- then just remove the other two (plus the newline after...to help keep the .info file clean)
-  $files[$dotinfo]['repl']["/settings\[alpha_debug_grid_roles\]\[2\] = '2'\n/"] = '';
-  $files[$dotinfo]['repl']["/settings\[alpha_debug_grid_roles\]\[3\] = '3'\n/"] = '';
-
-  unset($files[$info['parent'] . '.info']);
-
-  // Copy template.php and theme-settings.php and replace the parent theme's
-  // name. The files should already be there in $files, so we'll just tweak their repl arrays.
-  $files['template.php']['repl']["/{$info['parent']}/"] = $info['t_name'];
-  $files['theme-settings.php']['repl']["/{$info['parent']}/"] = $info['t_name'];
+  // Need to rename responsive grid css files...
+  rename("$subtheme_dir/css/YOURTHEME-alpha-default-narrow.scss", "$subtheme_dir/css/{$info['subtheme_name']}-alpha-default-narrow.scss");
+  rename("$subtheme_dir/css/YOURTHEME-alpha-default-normal.scss", "$subtheme_dir/css/{$info['subtheme_name']}-alpha-default-normal.scss");
+  rename("$subtheme_dir/css/YOURTHEME-alpha-default.scss", "$subtheme_dir/css/{$info['subtheme_name']}-alpha-default.scss");
+  rename("$subtheme_dir/css/YOURTHEME-alpha-default-wide.scss", "$subtheme_dir/css/{$info['subtheme_name']}-alpha-default-wide.scss");
 }
