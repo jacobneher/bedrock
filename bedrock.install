@@ -500,10 +500,10 @@ function bedrock_install() {
   user_role_grant_permissions(DRUPAL_AUTHENTICATED_RID, array('access content'));
 
   // Create a content contributor role
-  $content_contributor_role = new stdClass();
-  $content_contributor_role->name = 'Content Contributor';
-  $content_contributor_role->weight = 2;
-  user_role_save($content_contributor_role);
+  $content_editor_role = new stdClass();
+  $content_editor_role->name = 'Content Editor';
+  $content_editor_role->weight = 2;
+  user_role_save($content_editor_role);
   $content_contributor_permissions = array(
     'create article content',
     'create page content',
@@ -519,13 +519,13 @@ function bedrock_install() {
     'view revisions',
     'view the administration theme',
   );
-  user_role_grant_permissions($content_contributor_role->rid, $content_contributor_permissions);
+  user_role_grant_permissions($content_editor_role->rid, $content_contributor_permissions);
   
   // Create a user administrator role
-  $user_admin_role = new stdClass();
-  $user_admin_role->name = 'Administrator';
-  $user_admin_role->weight = 3;
-  user_role_save($user_admin_role);
+  $content_admin_role = new stdClass();
+  $content_admin_role->name = 'Content Administrator';
+  $content_admin_role->weight = 3;
+  user_role_save($content_admin_role);
   $user_admin_permissions = array(
     'access user profiles',
     'administer main-menu menu items',
@@ -546,11 +546,11 @@ function bedrock_install() {
     'view revisions',
     'view the administration theme',
   );
-  user_role_grant_permissions($user_admin_role->rid, $user_admin_permissions);
+  user_role_grant_permissions($content_admin_role->rid, $user_admin_permissions);
 
   // Create a default role for site administrators, with all available permissions assigned.
   $site_admin_role = new stdClass();
-  $site_admin_role->name = 'Super Administrator';
+  $site_admin_role->name = 'Site Administrator';
   $site_admin_role->weight = 4;
   user_role_save($site_admin_role);
   user_role_grant_permissions($site_admin_role->rid, array_keys(module_invoke_all('permission')));
