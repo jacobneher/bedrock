@@ -142,11 +142,11 @@ function bedrock_install() {
  * *****************************************/
   $admin_tools_links = array(
     0 => array(
-      'title' => 'Logout',
-      'href'  => 'user/logout',
-      'weight' => 100,
+      'title'      => 'Logout',
+      'href'       => 'user/logout',
+      'weight'     => 100,
       'permission' => 0,
-      'redirect' => 0,
+      'redirect'   => 0,
     ),
   );
   

@@ -160,7 +160,8 @@ function bedrock_install_omega_subtheme_submit(&$form, &$form_state) {
   theme_disable(array('bartik'));
   variable_set('theme_default', $form_state['values']['sysname']);
   
-  // Set the 'Main Page Content' block to the content region
+  // Setup default blocks
+  // --- Main page content
   db_update('block')
     ->fields(array(
       'status' => 1,
@@ -169,6 +170,30 @@ function bedrock_install_omega_subtheme_submit(&$form, &$form_state) {
     ))
     ->condition('module', 'system')
     ->condition('delta', 'main')
+    ->condition('theme', $form_state['values']['sysname'])
+    ->execute();
+  // -- Copyright block (from copyright_block.module)
+  db_update('block')
+    ->fields(array(
+      'status' => 1,
+      'region' => 'footer_second',
+      'weight' => -12,
+      'title'  => '<none>',
+    ))
+    ->condition('module', 'copyright_block')
+    ->condition('delta', 'copyright')
+    ->condition('theme', $form_state['values']['sysname'])
+    ->execute();
+  // -- Promote block (from promote.module (custom module))
+  db_update('block')
+    ->fields(array(
+      'status' => 1,
+      'region' => 'footer_second',
+      'weight' => -11,
+      'title'  => '<none>',
+    ))
+    ->condition('module', 'promote')
+    ->condition('delta', 'promote')
     ->condition('theme', $form_state['values']['sysname'])
     ->execute();
 }
