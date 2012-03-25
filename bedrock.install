@@ -80,36 +80,10 @@ function bedrock_install() {
   variable_set('db_maintenance_cron_frequency', '86400');
   variable_set('db_maintenance_cron_last', time());
   variable_set('db_maintenance_log', 0);
-  $db_maintenance = array(
-    'actions', 'actions', 'authmap', 'authmap', 'backup_migrate_destinations', 'backup_migrate_destinations',
-    'backup_migrate_profiles', 'backup_migrate_profiles', 'backup_migrate_schedules',
-    'backup_migrate_schedules', 'batch', 'batch', 'block', 'block', 'block_custom', 'block_custom',
-    'block_node_type', 'block_node_type', 'block_role', 'block_role', 'blocked_ips', 'blocked_ips', 'cache',
-    'cache', 'cache_block', 'cache_block', 'cache_bootstrap', 'cache_bootstrap', 'cache_field', 'cache_field',
-    'cache_filter', 'cache_filter', 'cache_form', 'cache_form', 'cache_image', 'cache_image', 'cache_menu',
-    'cache_menu', 'cache_page', 'cache_page', 'cache_path', 'cache_path', 'cache_token', 'cache_token',
-    'cache_update', 'cache_update', 'cache_views', 'cache_views', 'cache_views_data', 'cache_views_data',
-    'cck_field_settings', 'cck_field_settings', 'ctools_css_cache', 'ctools_css_cache', 'ctools_object_cache',
-    'ctools_object_cache', 'date_format_locale', 'date_format_locale', 'date_format_type', 'date_format_type',
-    'date_formats', 'date_formats', 'field_config', 'field_config', 'field_config_instance',
-    'field_config_instance', 'field_data_body', 'field_data_body', 'field_revision_body',
-    'field_revision_body', 'file_managed', 'file_managed', 'file_usage', 'file_usage', 'filter', 'filter',
-    'filter_format', 'filter_format', 'flood', 'flood', 'history', 'history', 'image_effects',
-    'image_effects', 'image_styles', 'image_styles', 'login_destination', 'login_destination', 'menu_custom',
-    'menu_custom', 'menu_links', 'menu_links', 'menu_router', 'menu_router', 'node', 'node', 'node_access',
-    'node_access', 'node_revision', 'node_revision', 'node_type', 'node_type', 'page_title', 'page_title',
-    'queue', 'queue', 'quickbar_help', 'quickbar_help', 'redirect', 'redirect', 'rdf_mapping', 'rdf_mapping', 'registry', 'registry', 'registry_file', 'registry_file',
-    'role', 'role', 'role_permission', 'role_permission', 'semaphore', 'semaphore', 'sequences', 'sequences',
-    'sessions', 'sessions', 'shortcut_set', 'shortcut_set', 'shortcut_set_users', 'shortcut_set_users',
-    'system', 'system', 'taxonomy_index', 'taxonomy_index', 'taxonomy_term_data', 'taxonomy_term_data',
-    'taxonomy_term_hierarchy', 'taxonomy_term_hierarchy', 'taxonomy_vocabulary', 'taxonomy_vocabulary',
-    'url_alias', 'url_alias', 'users', 'users', 'users_roles', 'users_roles', 'variable', 'variable',
-    'views_display', 'views_display', 'views_view', 'views_view', 'watchdog', 'watchdog', 'webform',
-    'webform', 'webform_component', 'webform_component', 'webform_emails', 'webform_emails', 'webform_roles',
-    'webform_roles', 'webform_submissions', 'webform_submissions', 'webform_submitted_data',
-    'webform_submitted_data', 'wysiwyg', 'wysiwyg', 'wysiwyg_user', 'wysiwyg_user', 'xmlsitemap',
-    'xmlsitemap', 'xmlsitemap_sitemap', 'xmlsitemap_sitemap'
-  );
+  // Get a list of all database using the db_maintenance.module's method
+  $db_maintenance = _db_maintenance_list_tables($databases['default']['default']['database']);
+  // Tables to add that are not added to db yet when above function is called
+  $db_maintenance['cache_update'] => 'cache_update';
   variable_set('db_maintenance_table_list_' . $databases['default']['default']['database'], $db_maintenance);
 
 
