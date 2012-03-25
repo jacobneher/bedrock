@@ -303,7 +303,7 @@ function bedrock_install() {
       'pages'            => '',
       'destination_type' => 0,
       'destination'      => '<front>',
-      'weight'           => 0
+      'weight'           => -50
     ))
     ->execute();
   
