@@ -36,7 +36,7 @@ function bedrock_form_install_configure_form_alter(&$form, $form_state) {
  * Implements hook_install_tasks().
  */
 function bedrock_install_tasks($install_state) {
-  $tasks = array(
+/**  $tasks = array(
     'install_omega_subtheme' => array(
       'display_name' => st('Omega subtheme'),
       'display'      => TRUE,
@@ -46,6 +46,7 @@ function bedrock_install_tasks($install_state) {
   );
   
   return $tasks;
+**/
 }
 
 /**
