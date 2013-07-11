@@ -27,7 +27,7 @@ function bedrock_form_install_configure_form_alter(&$form, $form_state) {
   $form['admin_account']['account']['pass']['#default_value'] = 'Jd4ms!';
  
   // Set default country
-  $form['server_settings']['site_default_country']['#default_value'] = 'United States';
+  $form['server_settings']['site_default_country']['#default_value'] = 'US';
   // Set default timezone
   $form['server_settings']['date_default_timezone']['#default_value'] = 'America/Denver';
 }
@@ -36,7 +36,7 @@ function bedrock_form_install_configure_form_alter(&$form, $form_state) {
  * Implements hook_install_tasks().
  */
 function bedrock_install_tasks($install_state) {
-/**  $tasks = array(
+  $tasks = array(
     'install_omega_subtheme' => array(
       'display_name' => st('Omega subtheme'),
       'display'      => TRUE,
@@ -46,7 +46,6 @@ function bedrock_install_tasks($install_state) {
   );
   
   return $tasks;
-**/
 }
 
 /**
@@ -147,56 +146,62 @@ function bedrock_install_omega_subtheme_submit(&$form, &$form_state) {
   );
   
   // Process the $files array.
+  // If successful, set a message telling the user that all is well
   if (process_subtheme($info) !== FALSE) {
-    drupal_set_message(t('A new subtheme was successfully created. You may now !config_link.', array('!config_link' => l('configure your new theme', 'admin/flush-cache/cache', array('query' => array('destination' => 'admin/appearance/settings/'. $form_state['values']['sysname']))))));
+    // We only want to setup the subtheme as the site's theme if it was created successfully, otherwise we'll leave the Drupal defaults alone
+    // Enable custom theme as default...
+    theme_enable(array($form_state['values']['sysname']));
+    // ...and disable Drupal's default Bartik theme
+    theme_disable(array('bartik'));
+    variable_set('theme_default', $form_state['values']['sysname']);
+  
+    // Flush the cached theme data so the new subtheme appears in the parent
+    // theme list.
+    system_rebuild_theme_data();
+    
+    // Setup default blocks
+    // --- Main page content
+    db_update('block')
+      ->fields(array(
+        'status' => 1,
+        'region' => 'content',
+        'weight' => 0,
+      ))
+      ->condition('module', 'system')
+      ->condition('delta', 'main')
+      ->condition('theme', $form_state['values']['sysname'])
+      ->execute();
+    // -- Copyright block (from copyright_block.module)
+    db_update('block')
+      ->fields(array(
+        'status' => 1,
+        'region' => 'footer_second',
+        'weight' => -12,
+        'title'  => '<none>',
+      ))
+      ->condition('module', 'copyright_block')
+      ->condition('delta', 'copyright')
+      ->condition('theme', $form_state['values']['sysname'])
+      ->execute();
+    // -- Promote block (from promote.module (custom module))
+    db_update('block')
+      ->fields(array(
+        'status' => 1,
+        'region' => 'footer_second',
+        'weight' => -11,
+        'title'  => '<none>',
+      ))
+      ->condition('module', 'promote')
+      ->condition('delta', 'promote')
+      ->condition('theme', $form_state['values']['sysname'])
+      ->execute();
+      
+    drupal_set_message(t('The new subtheme was successfully created. You may now !config_link.', array('!config_link' => l('configure your new theme', 'admin/flush-cache/cache', array('query' => array('destination' => 'admin/appearance/settings/'. $form_state['values']['sysname']))))));
   }
-
-  // Flush the cached theme data so the new subtheme appears in the parent
-  // theme list.
-  system_rebuild_theme_data();
-  
-  // Enable custom theme as default...
-  theme_enable(array($form_state['values']['sysname']));
-  // ...and disable Drupal's default Bartik theme
-  theme_disable(array('bartik'));
-  variable_set('theme_default', $form_state['values']['sysname']);
-  
-  // Setup default blocks
-  // --- Main page content
-  db_update('block')
-    ->fields(array(
-      'status' => 1,
-      'region' => 'content',
-      'weight' => 0,
-    ))
-    ->condition('module', 'system')
-    ->condition('delta', 'main')
-    ->condition('theme', $form_state['values']['sysname'])
-    ->execute();
-  // -- Copyright block (from copyright_block.module)
-  db_update('block')
-    ->fields(array(
-      'status' => 1,
-      'region' => 'footer_second',
-      'weight' => -12,
-      'title'  => '<none>',
-    ))
-    ->condition('module', 'copyright_block')
-    ->condition('delta', 'copyright')
-    ->condition('theme', $form_state['values']['sysname'])
-    ->execute();
-  // -- Promote block (from promote.module (custom module))
-  db_update('block')
-    ->fields(array(
-      'status' => 1,
-      'region' => 'footer_second',
-      'weight' => -11,
-      'title'  => '<none>',
-    ))
-    ->condition('module', 'promote')
-    ->condition('delta', 'promote')
-    ->condition('theme', $form_state['values']['sysname'])
-    ->execute();
+  // If the subtheme wasn't created successfully, tell the user so they know to setup the subtheme manually.
+  else {
+    drupal_set_message(t('There was an error setting up the subtheme. Please set it up manually!'), 'error');
+  }
 }
 
 /**
@@ -206,23 +211,28 @@ function bedrock_install_omega_subtheme_submit(&$form, &$form_state) {
  *   The files to process.
  */
 function process_subtheme($info) {
-  $subtheme_dir = "sites/default/themes/{$info['subtheme_name']}";
+  $subtheme_dir = "sites/all/themes/{$info['subtheme_name']}";
   // Need to rename 'subtheme' directory
-  rename('sites/default/themes/subtheme', $subtheme_dir);
-  
-  // Need to rename the .info file
-  rename("$subtheme_dir/YOURTHEME.info", "$subtheme_dir/{$info['subtheme_name']}.info");
-  
-  // Make customized changes to .info file
-  // Open the file, do replacements and save it
-  $text = file_get_contents("$subtheme_dir/{$info['subtheme_name']}.info");
-  $text = str_replace('[[subtheme-name]]', $info['friendly_name'], $text);
-  $text = str_replace('[[subtheme-desc]]', $info['subtheme_desc'], $text);
-  file_put_contents("$subtheme_dir/{$info['subtheme_name']}.info", $text);
-  
-  // Need to rename responsive grid css files...
-  rename("$subtheme_dir/css/YOURTHEME-alpha-default-narrow.scss", "$subtheme_dir/css/{$info['subtheme_name']}-alpha-default-narrow.scss");
-  rename("$subtheme_dir/css/YOURTHEME-alpha-default-normal.scss", "$subtheme_dir/css/{$info['subtheme_name']}-alpha-default-normal.scss");
-  rename("$subtheme_dir/css/YOURTHEME-alpha-default.scss", "$subtheme_dir/css/{$info['subtheme_name']}-alpha-default.scss");
-  rename("$subtheme_dir/css/YOURTHEME-alpha-default-wide.scss", "$subtheme_dir/css/{$info['subtheme_name']}-alpha-default-wide.scss");
+  if (rename('sites/all/themes/subtheme', $subtheme_dir)) {
+    // Need to rename the .info file
+    rename("$subtheme_dir/YOURTHEME.info", "$subtheme_dir/{$info['subtheme_name']}.info");
+    
+    // Make customized changes to .info file
+    // Open the file, do replacements and save it
+    $text = file_get_contents("$subtheme_dir/{$info['subtheme_name']}.info");
+    $text = str_replace('[[subtheme-name]]', $info['friendly_name'], $text);
+    $text = str_replace('[[subtheme-desc]]', $info['subtheme_desc'], $text);
+    file_put_contents("$subtheme_dir/{$info['subtheme_name']}.info", $text);
+    
+    // Need to rename responsive grid css files...
+    rename("$subtheme_dir/css/YOURTHEME-alpha-default-narrow.scss", "$subtheme_dir/css/{$info['subtheme_name']}-alpha-default-narrow.scss");
+    rename("$subtheme_dir/css/YOURTHEME-alpha-default-normal.scss", "$subtheme_dir/css/{$info['subtheme_name']}-alpha-default-normal.scss");
+    rename("$subtheme_dir/css/YOURTHEME-alpha-default.scss", "$subtheme_dir/css/{$info['subtheme_name']}-alpha-default.scss");
+    rename("$subtheme_dir/css/YOURTHEME-alpha-default-wide.scss", "$subtheme_dir/css/{$info['subtheme_name']}-alpha-default-wide.scss");
+    
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
 }
