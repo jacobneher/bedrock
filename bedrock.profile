@@ -148,16 +148,16 @@ function bedrock_install_omega_subtheme_submit(&$form, &$form_state) {
   // Process the $files array.
   // If successful, set a message telling the user that all is well
   if (process_subtheme($info) !== FALSE) {
+    // Flush the cached theme data so the new subtheme appears in the parent
+    // theme list.
+    system_rebuild_theme_data();
+    
     // We only want to setup the subtheme as the site's theme if it was created successfully, otherwise we'll leave the Drupal defaults alone
     // Enable custom theme as default...
     theme_enable(array($form_state['values']['sysname']));
     // ...and disable Drupal's default Bartik theme
     theme_disable(array('bartik'));
     variable_set('theme_default', $form_state['values']['sysname']);
-  
-    // Flush the cached theme data so the new subtheme appears in the parent
-    // theme list.
-    system_rebuild_theme_data();
     
     // Setup default blocks
     // --- Main page content
@@ -213,7 +213,7 @@ function bedrock_install_omega_subtheme_submit(&$form, &$form_state) {
 function process_subtheme($info) {
   $subtheme_dir = "sites/all/themes/{$info['subtheme_name']}";
   // Need to rename 'subtheme' directory
-  if (rename('sites/all/themes/subtheme', $subtheme_dir)) {
+  if (rename($info['initial_dir'], $subtheme_dir)) {
     // Need to rename the .info file
     rename("$subtheme_dir/YOURTHEME.info", "$subtheme_dir/{$info['subtheme_name']}.info");
     
