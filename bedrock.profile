@@ -19,7 +19,7 @@ function bedrock_form_install_configure_form_alter(&$form, $form_state) {
   // Set admin username
   $form['admin_account']['account']['name']['#default_value'] = 'admin';
   // Set admin email
-  $form['admin_account']['account']['mail']['#default_value'] = 'jneher@itcoloradosprings.com';
+  $form['admin_account']['account']['mail']['#default_value'] = 'services@threeshadowsmedia.com';
   // Set admin password
   //-- We have to set the type to textfield so that we can enter a default value
   $form['admin_account']['account']['pass']['#type'] = 'textfield';
