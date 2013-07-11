@@ -83,7 +83,7 @@ function bedrock_install() {
   // Get a list of all database using the db_maintenance.module's method
   $db_maintenance = _db_maintenance_list_tables($databases['default']['default']['database']);
   // Tables to add that are not added to db yet when above function is called
-  $db_maintenance['cache_update'] => 'cache_update';
+//  $db_maintenance['cache_update'] => 'cache_update';
   variable_set('db_maintenance_table_list_' . $databases['default']['default']['database'], $db_maintenance);
 
 
