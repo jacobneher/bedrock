@@ -242,6 +242,27 @@ function bedrock_install() {
 
 
 /**
+ * MetaTag Module
+ * *****************************************/
+  $content_metatag = array(
+    'instance' => 'node',
+    'config'   => array(
+      'title' => array(
+        'value' => '[node:title] - [site:name]',
+      ),
+      'description' => array(
+        'value' => '[node:summary]',
+      ),
+    ),
+  );
+  
+  drupal_write_record('metatag_config', $content_metatag);
+
+  // Clear any caches.
+  metatag_config_cache_clear();  
+  
+  
+/**
  * XML Sitemap Module
  * *****************************************/
   $xmlsitemap_included = array(
@@ -602,7 +623,7 @@ function bedrock_install() {
   
   // Temporary file path
   variable_set('file_temporary_path', conf_path() . '/files/tmp');
-  
+    
   // Private file path
   $private_path = conf_path() . '/private';
   // Emulate what happens when setting up the private file path manually...
