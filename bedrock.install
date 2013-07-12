@@ -86,13 +86,6 @@ function bedrock_install() {
 //  $db_maintenance['cache_update'] => 'cache_update';
   variable_set('db_maintenance_table_list_' . $databases['default']['default']['database'], $db_maintenance);
 
-
-/**
- * Page Title Module
- * *****************************************/  
-  variable_set('page_title_front', '[site:name]: [site:slogan]');
-  variable_set('page_title_default', '[current-page:page-title] - [site:name]');
-
   
 /**
  * Admin Module
@@ -111,6 +104,7 @@ function bedrock_install() {
   );
   variable_set('admin_toolbar', $admin_toolbar);
   
+
 /**
  * Admin Tools Module
  * *****************************************/

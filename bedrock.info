@@ -96,7 +96,6 @@ dependencies[] = redirect
 dependencies[] = globalredirect
 dependencies[] = googleanalytics
 dependencies[] = metatag
-dependencies[] = page_title
 dependencies[] = xmlsitemap
 dependencies[] = xmlsitemap_custom
 dependencies[] = xmlsitemap_engines
