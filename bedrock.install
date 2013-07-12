@@ -88,40 +88,6 @@ function bedrock_install() {
 
   
 /**
- * Admin Module
- * *****************************************/  
-  $admin_toolbar = array(
-    'layout'   => 'vertical',
-    'position' => 'nw',
-    'behavior' => 'ah',
-    'blocks'   => array(
-      'admin_tools-clearcache' => 1,
-      'admin-create'           => -1,
-      'admin-menu'             => 1,
-      'admin-devel'            => -1,
-      'shortcut-shortcuts'     => -1,
-    ),
-  );
-  variable_set('admin_toolbar', $admin_toolbar);
-  
-
-/**
- * Admin Tools Module
- * *****************************************/
-  $admin_tools_links = array(
-    0 => array(
-      'title'      => 'Logout',
-      'href'       => 'user/logout',
-      'weight'     => 100,
-      'permission' => 0,
-      'redirect'   => 0,
-    ),
-  );
-  
-  variable_set('admin_tools_custom_links', $admin_tools_links);
-  
-
-/**
  * Dev Banner Module
  * *****************************************/
   variable_set('dev_banner_enabled', 1);
