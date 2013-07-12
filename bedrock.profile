@@ -203,7 +203,7 @@ function bedrock_install_omega_subtheme_submit(&$form, &$form_state) {
       ))
       ->condition('module', 'system')
       ->condition('delta', 'help')
-      ->condition('theme', $form_state['value']['sysname'])
+      ->condition('theme', $form_state['values']['sysname'])
       ->execute();
       
     drupal_set_message(t('The new subtheme was successfully created. You may now !config_link.', array('!config_link' => l('configure your new theme', 'admin/flush-cache/cache', array('query' => array('destination' => 'admin/appearance/settings/'. $form_state['values']['sysname']))))));
