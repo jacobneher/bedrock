@@ -262,8 +262,8 @@ function bedrock_install() {
 /**
  * Copyright Block Module
  * *****************************************/
-  variable_set('copyright_block_inceptionyear', date('Y'));
-  variable_set('copyright_block_template', '[year] [holder]');
+  variable_set('copyright_block_start_year', date('Y'));
+  variable_set('copyright_block_text', 'Copyright &copy; [copyright_statement:dates] [site:name]');
 
 
 /**

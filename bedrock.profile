@@ -180,7 +180,7 @@ function bedrock_install_omega_subtheme_submit(&$form, &$form_state) {
         'title'  => '<none>',
       ))
       ->condition('module', 'copyright_block')
-      ->condition('delta', 'copyright')
+      ->condition('delta', 'copyright_block')
       ->condition('theme', $form_state['values']['sysname'])
       ->execute();
     // -- Promote block (from promote.module (custom module))
@@ -194,6 +194,16 @@ function bedrock_install_omega_subtheme_submit(&$form, &$form_state) {
       ->condition('module', 'promote')
       ->condition('delta', 'promote')
       ->condition('theme', $form_state['values']['sysname'])
+      ->execute();
+    // -- System help block -- REMOVE!
+    db_update('block')
+      ->fields(array(
+        'status' => 0,
+        'region' => '-1'
+      ))
+      ->condition('module', 'system')
+      ->condition('delta', 'help')
+      ->condition('theme', $form_state['value']['sysname'])
       ->execute();
       
     drupal_set_message(t('The new subtheme was successfully created. You may now !config_link.', array('!config_link' => l('configure your new theme', 'admin/flush-cache/cache', array('query' => array('destination' => 'admin/appearance/settings/'. $form_state['values']['sysname']))))));
