@@ -623,7 +623,12 @@ function bedrock_install() {
   
   // Temporary file path
   variable_set('file_temporary_path', conf_path() . '/files/tmp');
-    
+  
+  // We need to create the tmp directory if it doesn't already exist
+  if (!file_exists(conf_path() . '/files/tmp')) {
+    mkdir(conf_path() . '/files/tmp', 0777, true);
+  }
+  
   // Private file path
   $private_path = conf_path() . '/private';
   // Emulate what happens when setting up the private file path manually...
