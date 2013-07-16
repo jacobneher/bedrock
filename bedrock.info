@@ -46,10 +46,10 @@ dependencies[] = webform
 ;development
 ;--------------
 dependencies[] = ctools
-dependencies[] = dev_banner
 dependencies[] = devel
 dependencies[] = drupalforfirebug
 dependencies[] = drupalforfirebug_preprocess
+dependencies[] = environment_indicator
 
 ;fields
 ;--------------

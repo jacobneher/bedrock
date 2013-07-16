@@ -88,13 +88,39 @@ function bedrock_install() {
 
   
 /**
- * Dev Banner Module
+ * Environment Indicator Module
  * *****************************************/
-  variable_set('dev_banner_enabled', 1);
-  variable_set('dev_banner_image_set', '1');
-  variable_set('dev_banner_position', 'se');
-  variable_set('dev_banner_sticky', 1);
-  variable_set('dev_banner_url_devel', $_SERVER['HTTP_HOST']);
+  // Reuse the default_environment settings to become the development settings
+  $development_settings = array(
+    'color'    => '#A33',
+    'weight'   => '-100',
+    'position' => 'top',
+    'fixed'    => 0,
+  );
+  db_insert('environment_indicator_environment')
+    ->fields(array(
+      'machine'  => 'development',
+      'name'     => 'Development',
+      'regexurl' => '.*\.(lc|loc|local)',
+      'settings' => serialize($development_settings),
+    ))
+    ->execute();
+  
+  // Add a testing environment...
+  $testing_settings = array(
+    'color'    => '#0C045E',
+    'weight'   => '-90',
+    'position' => 'top',
+    'fixed'    => 0,
+  );
+  db_insert('environment_indicator_environment')
+    ->fields(array(
+      'machine'  => 'testing',
+      'name'     => 'Testing',
+      'regexurl' => 'test\..*\.(com|net|org|me|us)',
+      'settings' => serialize($testing_settings),
+    ))
+    ->execute();
 
 
 /**
