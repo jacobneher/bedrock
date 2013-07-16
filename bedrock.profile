@@ -30,6 +30,14 @@ function bedrock_form_install_configure_form_alter(&$form, $form_state) {
   $form['server_settings']['site_default_country']['#default_value'] = 'US';
   // Set default timezone
   $form['server_settings']['date_default_timezone']['#default_value'] = 'America/Denver';
+  
+  // Collapse some fieldsets that we have auto-filled all the fields in
+  $form['admin_account']['#collapsible'] = 1;
+  $form['admin_account']['#collapsed'] = 1;
+  $form['server_settings']['#collapsible'] = 1;
+  $form['server_settings']['#collapsed'] = 1;
+  $form['update_notifications']['#collapsible'] = 1;
+  $form['update_notifications']['#collapsed'] = 1;
 }
 
 /**
