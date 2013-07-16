@@ -124,6 +124,22 @@ function bedrock_install() {
 
 
 /**
+ * Admin Menu Module
+ * *****************************************/
+  variable_set('admin_menu_tweak_tabs', 1);
+  
+  $components = array(
+    'admin_menu.icon'    => 1,
+    'admin_menu.menu'    => 1,
+    'admin_menu.account' => 1,
+    'shortcut.links'     => 0,
+    'admin_menu.search'  => 0, 
+    'admin_menu.users'   => 0,
+  );
+  variable_set('admin_menu_components', $components);
+ 
+ 
+/**
  * External Links Module
  * *****************************************/  
   variable_set('extlink_target', '_blank');
