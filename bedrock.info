@@ -48,12 +48,8 @@ dependencies[] = webform
 dependencies[] = ctools
 dependencies[] = dev_banner
 dependencies[] = devel
-; There is a bug with drupalforfirebug and ctools
-;dependencies[] = drupalforfirebug
-;dependencies[] = drupalforfirebug_preprocess
-; prepro is required by sassy
-dependencies[] = prepro
-dependencies[] = sassy
+dependencies[] = drupalforfirebug
+dependencies[] = drupalforfirebug_preprocess
 
 ;fields
 ;--------------
