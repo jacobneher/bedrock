@@ -41,6 +41,9 @@ dependencies[] = libraries
 ;--------------
 dependencies[] = auto_nodetitle
 dependencies[] = ds
+dependencies[] = ds_extras
+dependencies[] = ds_forms
+dependencies[] = ds_ui
 dependencies[] = webform
 
 ;development
@@ -92,6 +95,7 @@ dependencies[] = redirect
 dependencies[] = globalredirect
 dependencies[] = googleanalytics
 dependencies[] = metatag
+dependencies[] = metatag_views
 dependencies[] = xmlsitemap
 dependencies[] = xmlsitemap_custom
 dependencies[] = xmlsitemap_engines
