@@ -86,10 +86,6 @@ dependencies[] = redirect
 ;--------------
 ;<none>
 
-;rules
-;--------------
-;<none>
-
 ;seo
 ;--------------
 dependencies[] = globalredirect
