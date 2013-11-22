@@ -603,6 +603,11 @@ function bedrock_install() {
 
 
 /**
+ * Admin Theme (Contrib)
+ * *****************************************/
+  variable_set('admin_theme_path', serialize('user*'));
+
+/**
  * Update Module (CORE)
  * *****************************************/
   variable_set('update_notification_threshold', 'security');

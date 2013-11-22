@@ -27,6 +27,7 @@ dependencies[] = taxonomy
 ;--------------
 dependencies[] = admin_menu
 dependencies[] = admin_menu_toolbar
+dependencies[] = admin_theme
 dependencies[] = backup_migrate
 dependencies[] = content_type_extras
 dependencies[] = menu_admin_per_menu
