@@ -126,13 +126,13 @@ function bedrock_install() {
 /**
  * Admin Menu Module
  * *****************************************/
-  variable_set('admin_menu_tweak_tabs', 1);
+  // Disable the default top margin since adminimal_admin_menu module takes care of that on its own.
+  variable_set('admin_menu_margin_top', 0);
   
   $components = array(
     'admin_menu.icon'    => 1,
     'admin_menu.menu'    => 1,
     'admin_menu.account' => 1,
-    'shortcut.links'     => 0,
     'admin_menu.search'  => 0, 
     'admin_menu.users'   => 0,
   );
