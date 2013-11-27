@@ -596,16 +596,22 @@ function bedrock_install() {
 
 
 /**
+ * Default Site Theme
+ * *****************************************/
+  variable_set('theme_default', 'flintstones');
+
+
+/**
  * Admin Theme (CORE)
  * *****************************************/
-  variable_set('admin_theme', 'doohickey');
+  variable_set('admin_theme', 'rubbles');
   variable_set('node_admin_theme', 1);
 
 
 /**
  * Admin Theme (Contrib)
  * *****************************************/
-  variable_set('admin_theme_path', serialize('user*'));
+  variable_set('admin_theme_path', 'user*');
 
 /**
  * Update Module (CORE)
