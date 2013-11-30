@@ -92,7 +92,7 @@ function bedrock_install() {
  * *****************************************/
   // Reuse the default_environment settings to become the development settings
   $development_settings = array(
-    'color'    => '#A33',
+    'color'    => '#AA3333',
     'weight'   => '-100',
     'position' => 'top',
     'fixed'    => 0,
