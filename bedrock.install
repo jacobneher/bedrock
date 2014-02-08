@@ -92,33 +92,35 @@ function bedrock_install() {
  * *****************************************/
   // Reuse the default_environment settings to become the development settings
   $development_settings = array(
-    'color'    => '#AA3333',
-    'weight'   => '-100',
-    'position' => 'top',
-    'fixed'    => 0,
+    'color'      => '#AA3333',
+    'text_color' => '#ffffff',
+    'weight'     => '-100',
+    'position'   => 'top',
+    'fixed'      => 0,
   );
   db_insert('environment_indicator_environment')
     ->fields(array(
       'machine'  => 'development',
       'name'     => 'Development',
-      'regexurl' => '.*\.(lc|loc|local)',
+      'regexurl' => '[A-Za-z0-9]+\\.(lc|loc|local)',
       'settings' => serialize($development_settings),
     ))
     ->execute();
   
-  // Add a testing environment...
-  $testing_settings = array(
-    'color'    => '#0C045E',
-    'weight'   => '-90',
-    'position' => 'top',
-    'fixed'    => 0,
+  // Add a staging environment...
+  $staging_settings = array(
+    'color'      => '#e26e00',
+    'text_color' => '#ffffff',
+    'weight'     => '-90',
+    'position'   => 'top',
+    'fixed'      => 0,
   );
   db_insert('environment_indicator_environment')
     ->fields(array(
-      'machine'  => 'testing',
-      'name'     => 'Testing',
-      'regexurl' => 'test\..*\.(com|net|org|me|us)',
-      'settings' => serialize($testing_settings),
+      'machine'  => 'staging',
+      'name'     => 'Staging',
+      'regexurl' => '[A-Za-z0-9]+\\.(tsmhosting|visiontrust)\\.com',
+      'settings' => serialize($staging_settings),
     ))
     ->execute();
 
