@@ -29,7 +29,6 @@ dependencies[] = admin_menu
 dependencies[] = adminimal_admin_menu
 dependencies[] = admin_theme
 dependencies[] = backup_migrate
-dependencies[] = content_type_extras
 dependencies[] = menu_admin_per_menu
 dependencies[] = permission_select
 
@@ -41,6 +40,7 @@ dependencies[] = libraries
 ;content
 ;--------------
 dependencies[] = auto_nodetitle
+dependencies[] = content_type_extras
 dependencies[] = ds
 dependencies[] = ds_extras
 dependencies[] = ds_forms
@@ -68,8 +68,7 @@ dependencies[] = spamspan
 
 ;javascript_utilities
 ;--------------
-; There is a bug with this and admin module.
-;dependencies[] = jquery_update
+dependencies[] = jquery_update
 
 ;media
 ;--------------
