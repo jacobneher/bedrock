@@ -785,4 +785,6 @@ function bedrock_install() {
     'menu_name'  => 'main-menu',
   );
   menu_link_save($item);
+  // Set cron to run every hour
+  variable_set('cron_safe_threshold', '3600');
 }
