@@ -128,8 +128,7 @@ function bedrock_install() {
 /**
  * Admin Menu Module
  * *****************************************/
-  // Disable the default top margin since adminimal_admin_menu module takes care of that on its own.
-  variable_set('admin_menu_margin_top', 0);
+  variable_set('admin_menu_margin_top', 1);
 
   $components = array(
     'admin_menu.icon'    => 1,
