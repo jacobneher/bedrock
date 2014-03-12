@@ -39,7 +39,7 @@ dependencies[] = libraries
 
 ;content
 ;--------------
-dependencies[] = auto_nodetitle
+dependencies[] = auto_entitylabel
 dependencies[] = content_type_extras
 dependencies[] = ds
 dependencies[] = ds_extras
