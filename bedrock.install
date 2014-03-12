@@ -44,15 +44,15 @@ function bedrock_install() {
     node_type_save($type);
     node_add_body_field($type);
   }
-  
+
   //Set the content types to not display author information
   variable_set('node_submitted_page', 0);
   variable_set('node_submitted_article', 0);
-  
+
   // Default "Page" to not be promoted and have comments disabled.
   variable_set('node_options_page', array('status'));
   variable_set('comment_page', COMMENT_NODE_HIDDEN);
-  
+
   // Default "Article" to not be promoted and have comments disabled.
   variable_set('node_options_article', array('status'));
   variable_set('comment_article', COMMENT_NODE_HIDDEN);
@@ -65,8 +65,8 @@ function bedrock_install() {
   variable_set('node_submitted_webform', 0);
   variable_set('node_options_webform', array('status'));
   variable_set('comment_webform', COMMENT_NODE_HIDDEN);
-  
-  
+
+
 /**
  * Pathauto Module
  * *****************************************/
@@ -86,7 +86,7 @@ function bedrock_install() {
 //  $db_maintenance['cache_update'] => 'cache_update';
   variable_set('db_maintenance_table_list_' . $databases['default']['default']['database'], $db_maintenance);
 
-  
+
 /**
  * Environment Indicator Module
  * *****************************************/
@@ -106,7 +106,7 @@ function bedrock_install() {
       'settings' => serialize($development_settings),
     ))
     ->execute();
-  
+
   // Add a staging environment...
   $staging_settings = array(
     'color'      => '#e26e00',
@@ -130,20 +130,20 @@ function bedrock_install() {
  * *****************************************/
   // Disable the default top margin since adminimal_admin_menu module takes care of that on its own.
   variable_set('admin_menu_margin_top', 0);
-  
+
   $components = array(
     'admin_menu.icon'    => 1,
     'admin_menu.menu'    => 1,
     'admin_menu.account' => 1,
-    'admin_menu.search'  => 0, 
+    'admin_menu.search'  => 0,
     'admin_menu.users'   => 0,
   );
   variable_set('admin_menu_components', $components);
- 
- 
+
+
 /**
  * External Links Module
- * *****************************************/  
+ * *****************************************/
   variable_set('extlink_target', '_blank');
   variable_set('extlink_class', 0);
   variable_set('extlink_mailto_class', 0);
@@ -228,7 +228,7 @@ function bedrock_install() {
   foreach ($backup_migrate_profiles as $backup_migrate_profile) {
     drupal_write_record('backup_migrate_profiles', $backup_migrate_profile);
   }
-  
+
   // Setup Destinations
   $backup_migrate_destinations = array(
     array(
@@ -245,7 +245,7 @@ function bedrock_install() {
   foreach ($backup_migrate_destinations as $backup_migrate_destination) {
     drupal_write_record('backup_migrate_destinations', $backup_migrate_destination);
   }
-  
+
   // Setup Schedules
   $backup_migrate_schedules = array(
     'daily_backup' => array(
@@ -357,7 +357,7 @@ function bedrock_install() {
       ),
     ),
   );
-  
+
   drupal_write_record('metatag_config', $front_page_metatag);
 
   $content_metatag = array(
@@ -371,13 +371,13 @@ function bedrock_install() {
       ),
     ),
   );
-  
+
   drupal_write_record('metatag_config', $content_metatag);
 
   // Clear any caches.
-  metatag_config_cache_clear();  
-  
-  
+  metatag_config_cache_clear();
+
+
 /**
  * XML Sitemap Module
  * *****************************************/
@@ -389,7 +389,7 @@ function bedrock_install() {
   variable_set('xmlsitemap_settings_node_article', $xmlsitemap_included);
   variable_set('xmlsitemap_settings_node_webform', $xmlsitemap_included);
 
-  
+
 /**
  * Copyright Block Module
  * *****************************************/
@@ -411,7 +411,7 @@ function bedrock_install() {
       'weight'           => -50
     ))
     ->execute();
-  
+
 
 /**
  * Text Formats, Filtering, and Paths
@@ -472,7 +472,7 @@ function bedrock_install() {
   );
   $filtered_html_format = (object) $filtered_html_format;
   filter_format_save($filtered_html_format);
-  
+
   // Add the Filtered HTML format to the appropriate roles
   user_role_grant_permissions(2, array('use text format filtered_html'));
   user_role_grant_permissions(3, array('use text format filtered_html'));
@@ -519,6 +519,14 @@ function bedrock_install() {
   );
   $full_html_format = (object) $full_html_format;
   filter_format_save($full_html_format);
+
+
+/**
+ * jQuery Update
+ * *****************************************/
+  variable_set('jquery_update_jquery_version', '1.7');
+  variable_set('jquery_update_jquery_cdn', 'google');
+  variable_set('jquery_update_compression_type', 'min');
 
 
 /**
@@ -630,7 +638,7 @@ function bedrock_install() {
     'view the administration theme',
   );
   user_role_grant_permissions($content_editor_role->rid, $content_contributor_permissions);
-  
+
   // Create a user administrator role
   $content_admin_role = new stdClass();
   $content_admin_role->name = 'Content Administrator';
@@ -740,15 +748,15 @@ function bedrock_install() {
  * *****************************************/
   // Public file path
   variable_set('file_public_path' , conf_path() . '/files');
-  
+
   // Temporary file path
   variable_set('file_temporary_path', conf_path() . '/files/tmp');
-  
+
   // We need to create the tmp directory if it doesn't already exist
   if (!file_exists(conf_path() . '/files/tmp')) {
     mkdir(conf_path() . '/files/tmp', 0777, true);
   }
-  
+
   // Private file path
   $private_path = conf_path() . '/private';
   // Emulate what happens when setting up the private file path manually...
