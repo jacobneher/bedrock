@@ -29,15 +29,6 @@ function bedrock_install() {
       'modified'    => 1,
       'locked'      => 0,
     ),
-    array(
-      'type'        => 'article',
-      'name'        => st('Article'),
-      'base'        => 'node_content',
-      'description' => st('Use <em>articles</em> for time-sensitive content like news, press releases or blog posts.'),
-      'custom'      => 1,
-      'modified'    => 1,
-      'locked'      => 0,
-    ),
   );
   foreach ($types as $type) {
     $type = node_type_set_defaults($type);
@@ -102,7 +93,7 @@ function bedrock_install() {
     ->fields(array(
       'machine'  => 'development',
       'name'     => 'Development',
-      'regexurl' => '[A-Za-z0-9]+\\.(lc|loc|local)',
+      'regexurl' => '[A-Za-z0-9]+\\.(dev)',
       'settings' => serialize($development_settings),
     ))
     ->execute();
@@ -119,7 +110,7 @@ function bedrock_install() {
     ->fields(array(
       'machine'  => 'staging',
       'name'     => 'Staging',
-      'regexurl' => '[A-Za-z0-9]+\\.(tsmhosting|visiontrust)\\.com',
+      'regexurl' => '[A-Za-z0-9]+\\.(tsm1\\.pw|visiontrust\\.com)',
       'settings' => serialize($staging_settings),
     ))
     ->execute();
@@ -523,7 +514,7 @@ function bedrock_install() {
 /**
  * jQuery Update
  * *****************************************/
-  variable_set('jquery_update_jquery_version', '1.7');
+  variable_set('jquery_update_jquery_version', '1.8');
   variable_set('jquery_update_jquery_cdn', 'google');
   variable_set('jquery_update_compression_type', 'min');
 
@@ -571,25 +562,13 @@ function bedrock_install() {
     'node_submitted'   => 0,
     'user_permissions' => array(
       'create_roles' => array(
-        '5' => 5,
-        '1' => 0,
-        '2' => 0,
-        '3' => 0,
-        '4' => 0,
+        '3' => 3,
       ),
       'edit_roles' => array(
-        '5' => 5,
-        '1' => 0,
-        '2' => 0,
-        '3' => 0,
-        '4' => 0,
+        '3' => 3,
       ),
       'delete_roles' => array(
-        '5' => 5,
-        '1' => 0,
-        '2' => 0,
-        '3' => 0,
-        '4' => 0,
+        '3' => 3,
       ),
     ),
     'content_type_extras_descriptions_required'   => 0,
@@ -616,55 +595,6 @@ function bedrock_install() {
   user_role_grant_permissions(DRUPAL_ANONYMOUS_RID, array('access content', 'access admin theme'));
   user_role_grant_permissions(DRUPAL_AUTHENTICATED_RID, array('access content', 'access admin theme'));
 
-  // Create a content contributor role
-  $content_editor_role = new stdClass();
-  $content_editor_role->name = 'Content Editor';
-  $content_editor_role->weight = 2;
-  user_role_save($content_editor_role);
-  $content_contributor_permissions = array(
-    'create article content',
-    'create page content',
-    'delete any article content',
-    'delete any page content',
-    'delete own article content',
-    'delete own page content',
-    'edit any article content',
-    'edit any page content',
-    'edit own article content',
-    'edit own page content',
-    'view own unpublished content',
-    'view revisions',
-    'view the administration theme',
-  );
-  user_role_grant_permissions($content_editor_role->rid, $content_contributor_permissions);
-
-  // Create a user administrator role
-  $content_admin_role = new stdClass();
-  $content_admin_role->name = 'Content Administrator';
-  $content_admin_role->weight = 3;
-  user_role_save($content_admin_role);
-  $user_admin_permissions = array(
-    'access user profiles',
-    'administer main-menu menu items',
-    'administer users',
-    'change own username',
-    'create article content',
-    'create page content',
-    'delete any article content',
-    'delete any page content',
-    'delete own article content',
-    'delete own page content',
-    'edit any article content',
-    'edit any page content',
-    'edit own article content',
-    'edit own page content',
-    'revert revisions',
-    'view own unpublished content',
-    'view revisions',
-    'view the administration theme',
-  );
-  user_role_grant_permissions($content_admin_role->rid, $user_admin_permissions);
-
   // Create a default role for site administrators, with all available permissions assigned.
   $site_admin_role = new stdClass();
   $site_admin_role->name = 'Site Administrator';
@@ -687,20 +617,20 @@ function bedrock_install() {
  * Default Site Theme
  * *****************************************/
   // Enable our customized subtheme...
-  db_update('system')
-    ->fields(array('status' => 1))
-    ->condition('type', 'theme')
-    ->condition('name', 'flintstones')
-    ->execute();
+  // db_update('system')
+  //   ->fields(array('status' => 1))
+  //   ->condition('type', 'theme')
+  //   ->condition('name', 'flintstones')
+  //   ->execute();
 
   // Disable Bartik theme since we won't be using that...
-  db_update('system')
-    ->fields(array('status' => 0))
-    ->condition('type', 'theme')
-    ->condition('name', 'bartik')
-    ->execute();
+  // db_update('system')
+  //   ->fields(array('status' => 0))
+  //   ->condition('type', 'theme')
+  //   ->condition('name', 'bartik')
+  //   ->execute();
 
-  variable_set('theme_default', 'flintstones');
+  // variable_set('theme_default', 'flintstones');
 
 
 /**

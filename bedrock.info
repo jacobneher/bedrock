@@ -23,108 +23,48 @@ dependencies[] = taxonomy
 
 ;CONTRIB
 ;-----------------------
-;administration
-;--------------
 dependencies[] = admin_menu
 dependencies[] = adminimal_admin_menu
 dependencies[] = admin_theme
-dependencies[] = backup_migrate
-dependencies[] = menu_admin_per_menu
-dependencies[] = permission_select
-
-;apis
-;--------------
-dependencies[] = entity
-dependencies[] = libraries
-
-;content
-;--------------
 dependencies[] = auto_entitylabel
+dependencies[] = backup_migrate
 dependencies[] = content_type_extras
-dependencies[] = ds
-dependencies[] = ds_extras
-dependencies[] = ds_forms
-dependencies[] = ds_ui
-dependencies[] = webform
-
-;development
-;--------------
+dependencies[] = copyright_block
 dependencies[] = ctools
+dependencies[] = db_maintenance
 dependencies[] = devel
 dependencies[] = drupalforfirebug
 dependencies[] = drupalforfirebug_preprocess
-dependencies[] = environment_indicator
-
-;fields
-;--------------
 dependencies[] = email
-dependencies[] = field_collection
-dependencies[] = field_group
-
-;filters
-;--------------
-dependencies[] = pathologic
-dependencies[] = spamspan
-
-;javascript_utilities
-;--------------
-dependencies[] = jquery_update
-
-;media
-;--------------
-;<none>
-
-;path_management
-;--------------
+dependencies[] = entity
+dependencies[] = environment_indicator
 dependencies[] = extlink
-dependencies[] = pathauto
-dependencies[] = redirect
-
-;permissions
-;--------------
-;<none>
-
-;seo
-;--------------
 dependencies[] = globalredirect
-dependencies[] = googleanalytics
+dependencies[] = jquery_update
+dependencies[] = libraries
+dependencies[] = login_destination
+dependencies[] = logintoboggan
 dependencies[] = metatag
 dependencies[] = metatag_views
+dependencies[] = module_filter
+dependencies[] = pathauto
+dependencies[] = pathologic
+dependencies[] = redirect
+dependencies[] = spamspan
+dependencies[] = token
+dependencies[] = views
+dependencies[] = views_ui
+dependencies[] = webform
 dependencies[] = xmlsitemap
 dependencies[] = xmlsitemap_custom
 dependencies[] = xmlsitemap_engines
 dependencies[] = xmlsitemap_menu
 dependencies[] = xmlsitemap_node
 
-;ui_tweaks
-;--------------
-dependencies[] = module_filter
-
-;user_interface
-;--------------
-;dependencies[] = quickbar
-dependencies[] = wysiwyg
-
-;users
-;--------------
-dependencies[] = login_destination
-dependencies[] = logintoboggan
-
-;utilities
-;--------------
-dependencies[] = copyright_block
-dependencies[] = db_maintenance
-dependencies[] = fpa
-dependencies[] = token
-
-;views
-;--------------
-dependencies[] = views
-dependencies[] = views_ui
-
 
 ;CUSTOM
 ;-----------------------
 dependencies[] = promote
+
 
 files[] = bedrock.profile
