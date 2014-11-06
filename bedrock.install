@@ -142,130 +142,130 @@ function bedrock_install() {
 /**
  * Backup & Migrate Module
  * *****************************************/
-  // Setup Profiles
-  $backup_migrate_profiles = array(
-    'slim_backup' => array(
-      'profile_id'        => 'default',
-      'name'              => 'Slim Backup',
-      'filename'          => '[site:name]-SLIM',
-      'append_timestamp'  => 1,
-      'timestamp_format'  => 'Y-m-d\TH-i-s',
-      'filters'           => array(
-        'compression'                => 'gzip',
-        'notify_success_enable'      => FALSE,
-        'notify_success_email'       => '',
-        'notify_failure_enable'      => FALSE,
-        'notify_failure_email'       => '',
-        'utils_site_offline'         => FALSE,
-        'utils_site_offline_message' => $site_name . ' is currently under maintenance. We should be back shortly. Thank you for your patience.',
-        'utils_description'          => '',
-        'destinations'               => array(
-          'db' => array(
-            'exclude_tables' => array(),
-            'nodata_tables'  => array(
-              'cache'            => 'cache',
-              'cache_admin_menu' => 'cache_admin_menu',
-              'cache_block'      => 'cache_block',
-              'cache_bootstrap'  => 'cache_bootstrap',
-              'cache_field'      => 'cache_field',
-              'cache_filter'     => 'cache_filter',
-              'cache_form'       => 'cache_form',
-              'cache_image'      => 'cache_image',
-              'cache_libraries'  => 'cache_libraries',
-              'cache_menu'       => 'cache_menu',
-              'cache_metatag'    => 'cache_metatag',
-              'cache_page'       => 'cache_page',
-              'cache_path'       => 'cache_path',
-              'cache_token'      => 'cache_token',
-              'cache_update'     => 'cache_update',
-              'cache_views'      => 'cache_views',
-              'cache_views_data' => 'cache_views_data',
-              'sessions'         => 'sessions',
-              'watchdog'         => 'watchdog',
-            ),
-            'utils_lock_tables' => 0,
-            'use_mysqldump'     => 0,
-          ),
-        ),
-      ),
-    ),
-    'full_backup' => array(
-      'profile_id'        => 'full',
-      'name'              => 'Full Backup',
-      'filename'          => '[site:name]-FULL',
-      'append_timestamp'  => 1,
-      'timestamp_format'  => 'Y-m-d\TH-i-s',
-      'filters'           => array(
-        'compression'                => 'gzip',
-        'notify_success_enable'      => FALSE,
-        'notify_success_email'       => '',
-        'notify_failure_enable'      => FALSE,
-        'notify_failure_email'       => '',
-        'utils_site_offline'         => FALSE,
-        'utils_site_offline_message' => $site_name . ' is currently under maintenance. We should be back shortly. Thank you for your patience.',
-        'utils_description'          => '',
-        'destinations'               => array(
-          'db' => array(
-            'exclude_tables'    => array(),
-            'nodata_tables'     => array(),
-            'utils_lock_tables' => 0,
-            'use_mysqldump'     => 0,
-          ),
-        ),
-      ),
-    ),
-  );
-  foreach ($backup_migrate_profiles as $backup_migrate_profile) {
-    drupal_write_record('backup_migrate_profiles', $backup_migrate_profile);
-  }
+  // // Setup Profiles
+  // $backup_migrate_profiles = array(
+  //   'slim_backup' => array(
+  //     'profile_id'        => 'default',
+  //     'name'              => 'Slim Backup',
+  //     'filename'          => '[site:name]-SLIM',
+  //     'append_timestamp'  => 1,
+  //     'timestamp_format'  => 'Y-m-d\TH-i-s',
+  //     'filters'           => array(
+  //       'compression'                => 'gzip',
+  //       'notify_success_enable'      => FALSE,
+  //       'notify_success_email'       => '',
+  //       'notify_failure_enable'      => FALSE,
+  //       'notify_failure_email'       => '',
+  //       'utils_site_offline'         => FALSE,
+  //       'utils_site_offline_message' => $site_name . ' is currently under maintenance. We should be back shortly. Thank you for your patience.',
+  //       'utils_description'          => '',
+  //       'destinations'               => array(
+  //         'db' => array(
+  //           'exclude_tables' => array(),
+  //           'nodata_tables'  => array(
+  //             'cache'            => 'cache',
+  //             'cache_admin_menu' => 'cache_admin_menu',
+  //             'cache_block'      => 'cache_block',
+  //             'cache_bootstrap'  => 'cache_bootstrap',
+  //             'cache_field'      => 'cache_field',
+  //             'cache_filter'     => 'cache_filter',
+  //             'cache_form'       => 'cache_form',
+  //             'cache_image'      => 'cache_image',
+  //             'cache_libraries'  => 'cache_libraries',
+  //             'cache_menu'       => 'cache_menu',
+  //             'cache_metatag'    => 'cache_metatag',
+  //             'cache_page'       => 'cache_page',
+  //             'cache_path'       => 'cache_path',
+  //             'cache_token'      => 'cache_token',
+  //             'cache_update'     => 'cache_update',
+  //             'cache_views'      => 'cache_views',
+  //             'cache_views_data' => 'cache_views_data',
+  //             'sessions'         => 'sessions',
+  //             'watchdog'         => 'watchdog',
+  //           ),
+  //           'utils_lock_tables' => 0,
+  //           'use_mysqldump'     => 0,
+  //         ),
+  //       ),
+  //     ),
+  //   ),
+  //   'full_backup' => array(
+  //     'profile_id'        => 'full',
+  //     'name'              => 'Full Backup',
+  //     'filename'          => '[site:name]-FULL',
+  //     'append_timestamp'  => 1,
+  //     'timestamp_format'  => 'Y-m-d\TH-i-s',
+  //     'filters'           => array(
+  //       'compression'                => 'gzip',
+  //       'notify_success_enable'      => FALSE,
+  //       'notify_success_email'       => '',
+  //       'notify_failure_enable'      => FALSE,
+  //       'notify_failure_email'       => '',
+  //       'utils_site_offline'         => FALSE,
+  //       'utils_site_offline_message' => $site_name . ' is currently under maintenance. We should be back shortly. Thank you for your patience.',
+  //       'utils_description'          => '',
+  //       'destinations'               => array(
+  //         'db' => array(
+  //           'exclude_tables'    => array(),
+  //           'nodata_tables'     => array(),
+  //           'utils_lock_tables' => 0,
+  //           'use_mysqldump'     => 0,
+  //         ),
+  //       ),
+  //     ),
+  //   ),
+  // );
+  // foreach ($backup_migrate_profiles as $backup_migrate_profile) {
+  //   drupal_write_record('backup_migrate_profiles', $backup_migrate_profile);
+  // }
 
-  // Setup Destinations
-  $backup_migrate_destinations = array(
-    array(
-      'destination_id' => 'scheduled',
-      'name'           => 'Scheduled Backups Directory',
-      'type'           => 'file',
-      'location'       => conf_path() . '/files/backup_migrate/scheduled',
-      'settings'       => array(
-        'chmod' => 0,
-        'chgrp' => 0,
-      ),
-    ),
-  );
-  foreach ($backup_migrate_destinations as $backup_migrate_destination) {
-    drupal_write_record('backup_migrate_destinations', $backup_migrate_destination);
-  }
+  // // Setup Destinations
+  // $backup_migrate_destinations = array(
+  //   array(
+  //     'destination_id' => 'scheduled',
+  //     'name'           => 'Scheduled Backups Directory',
+  //     'type'           => 'file',
+  //     'location'       => conf_path() . '/files/backup_migrate/scheduled',
+  //     'settings'       => array(
+  //       'chmod' => 0,
+  //       'chgrp' => 0,
+  //     ),
+  //   ),
+  // );
+  // foreach ($backup_migrate_destinations as $backup_migrate_destination) {
+  //   drupal_write_record('backup_migrate_destinations', $backup_migrate_destination);
+  // }
 
-  // Setup Schedules
-  $backup_migrate_schedules = array(
-    'daily_backup' => array(
-      'schedule_id'    => 'daily_backup',
-      'name'           => 'Daily Backup',
-      'source_id'      => 'db',
-      'destination_id' => 'scheduled',
-      'profile_id'     => 'default',
-      'keep'           => 30,
-      'period'         => 86400,
-      'last_run'       => 0,
-      'enabled'        => 1,
-      'cron'           => 0,
-    ),
-    'weekly_backup' => array(
-      'schedule_id'    => 'weekly_backup',
-      'name'           => 'Weekly Backup',
-      'source_id'      => 'db',
-      'destination_id' => 'scheduled',
-      'profile_id'     => 'full',
-      'keep'           => 22,
-      'period'         => 604800,
-      'last_run'       => 0,
-      'enabled'        => 1,
-      'cron'           => 0,
-    ),
-  );
-  foreach ($backup_migrate_schedules as $backup_migrate_schedule) {
-    drupal_write_record('backup_migrate_schedules', $backup_migrate_schedule);
-  }
+  // // Setup Schedules
+  // $backup_migrate_schedules = array(
+  //   'daily_backup' => array(
+  //     'schedule_id'    => 'daily_backup',
+  //     'name'           => 'Daily Backup',
+  //     'source_id'      => 'db',
+  //     'destination_id' => 'scheduled',
+  //     'profile_id'     => 'default',
+  //     'keep'           => 30,
+  //     'period'         => 86400,
+  //     'last_run'       => 0,
+  //     'enabled'        => 1,
+  //     'cron'           => 0,
+  //   ),
+  //   'weekly_backup' => array(
+  //     'schedule_id'    => 'weekly_backup',
+  //     'name'           => 'Weekly Backup',
+  //     'source_id'      => 'db',
+  //     'destination_id' => 'scheduled',
+  //     'profile_id'     => 'full',
+  //     'keep'           => 22,
+  //     'period'         => 604800,
+  //     'last_run'       => 0,
+  //     'enabled'        => 1,
+  //     'cron'           => 0,
+  //   ),
+  // );
+  // foreach ($backup_migrate_schedules as $backup_migrate_schedule) {
+  //   drupal_write_record('backup_migrate_schedules', $backup_migrate_schedule);
+  // }
 
 
 /**
